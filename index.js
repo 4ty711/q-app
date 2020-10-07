@@ -6,10 +6,14 @@ var app = new Vue({
         newMessageShown(val) {
             console.log(this.$refs)
             if (val) document.getElementById('contentInput').focus();
+        },
+        darkMode(val){
+            localStorage['darkMode'] = val;
         }
     },
     data: () => {
         return {
+            darkMode:0,
             me: null,
             showMe: false,
             creationToken: null,
@@ -74,6 +78,16 @@ var app = new Vue({
             })
         },
 
+        redeemResponse(msgId, respId, token){
+            kju.redeemResponse({
+                msgId: msgId,
+                respId: respId,
+                token: token
+            }, data => {
+                console.log(data);
+            })
+        },
+
         deleteMessage(msgId) {
             if(!confirm('Really delete?')) return;
 
@@ -117,6 +131,7 @@ var app = new Vue({
     created() {
         if (localStorage['creationToken']) Vue.set(this, 'creationToken', localStorage['creationToken']);
         if (localStorage['me']) Vue.set(this, 'me', localStorage['me']);
+        if(localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
 
         window.addEventListener('DOMContentLoaded', (event) => {
 
@@ -131,7 +146,11 @@ var app = new Vue({
 
                     data.forEach(d => {
                         fs.readFile('/q/' + d, { 'encoding': 'utf8' }, (err, file) => {
-                            if (!err) this.messages.unshift(JSON.parse(file))
+                            if (!err) {
+                                var msg = JSON.parse(file);
+                                if(msg.mine) msg.senderShort = 'me';
+                                this.messages.unshift(msg)
+                            }
                         })
 
                     })
