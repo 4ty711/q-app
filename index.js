@@ -1,5 +1,16 @@
 var kju = new KJU();
 
+var isObject = (a) => {
+            return (!!a) && (a.constructor === Object);
+        };
+
+const tokenDefinitions = [
+        new SimpleLexer.Matcher().start(/^\s+$/),
+        new SimpleLexer.Matcher().start(/,|\/|\.|-|;|:|_|\\|\^|\+|#|&|%|\?|@|\$/),
+        new SimpleLexer.Matcher().start(/\w/).next(/\w/),
+        SimpleLexer.TokenFactory({type:'reciever', ignore: true}, true).start(/\(/).next(/.|\s/).end(/\)/),
+    ];
+
 var app = new Vue({
     el: '#app',
     watch: {
@@ -63,6 +74,29 @@ var app = new Vue({
             this.createMessage(msg);
         },
         createMessage(msg) {
+
+            const lexer = SimpleLexer.Lexer(tokenDefinitions);
+            const lexerResult = lexer(msg.content);
+
+            var content = "";
+            var responses = [];
+            var reciever = "";
+
+            lexerResult.forEach((token, i) => {
+                if(isObject(token))
+                {
+                    if(token.type == 'reciever') reciever += token.value.replace('(','').replace(')','');
+                } else if(token == '#') {
+                    responses.push({title: lexerResult[i+1]});
+                } else {
+                    content+= token
+                }
+            })
+
+            if(content) msg.content = content;
+            if(responses.length>0) msg.responses = responses;
+            if(reciever) msg.reciever = reciever;
+
             kju.createMessage({
                 msg: {
                     content: msg.content,
@@ -76,6 +110,7 @@ var app = new Vue({
 
                 fs.writeFile('/q/' + data._id, JSON.stringify(data), {}, (err, d) => {
                     if (!err) {
+                        this.newMessage = {};
                         this.messages.unshift(data)
                     }
                 })

@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="leto.min.css" />
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/kju-org/kju-client@latest/index.js"></script>
+    <script src="dependencies/simple-lexer.js"></script>
     <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
     <script type="module">
         window.fs = new LightningFS('fs');
@@ -29,15 +30,15 @@
     }
 
     ::-webkit-input-placeholder { /* Edge */
-      color: #cccccc;
+      color: #777777;
     }
 
     :-ms-input-placeholder { /* Internet Explorer 10-11 */
-      color: #cccccc;
+      color: #777777;
     }
 
     ::placeholder {
-      color: #cccccc;
+      color: #777777;
     }
 
     .modeToggler {
@@ -67,14 +68,15 @@
                         &nbsp; New message...
                     </div>
                     <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
-                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="(no reciever)" v-model="newMessage.reciever">
+                        <!--input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="(no reciever)" v-model="newMessage.reciever">
                         <br>
-                        <br>
-                        <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Message">
+                        <br-->
+                        <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
-                        <br>
+                       
+                        <!--br>
                         <div class="leto-button-sm leto-border-darker-grey " v-for="response in newMessage.responses">{{response.title}} <i class="fa fa-times leto-pl-xxs" v-on:click="removeResponseFromNewMessage(response.title)"></i></div>
-                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md  leto-ph-sm leto-pv-xs leto-bg-none leto-text-white-dm" placeholder="+ response" v-model="newMessageResponse" v-on:keyup.enter="addRecieverToNewMessage($event)" v-on:keyup.delete="popResponseFromNewMessage($event)"> <span v-if="newMessageResponse">hit enter</span>
+                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md  leto-ph-sm leto-pv-xs leto-bg-none leto-text-white-dm" placeholder="+ response" v-model="newMessageResponse" v-on:keyup.enter="addRecieverToNewMessage($event)" v-on:keyup.delete="popResponseFromNewMessage($event)"> <span v-if="newMessageResponse">hit enter</span-->
                         
                         <div style="float:right;">
                             <div class="leto-bubble-sm" v-on:click="newMessageShown=false">
