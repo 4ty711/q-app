@@ -15,11 +15,15 @@ var app = new Vue({
     el: '#app',
     watch: {
         newMessageShown(val) {
-            console.log(this.$refs)
             if (val) document.getElementById('contentInput').focus();
         },
         darkMode(val){
             localStorage['darkMode'] = val;
+        },
+        redeemedMessagesShown(val){
+            if(val) val = 1;
+            else val = 0;
+            localStorage['redeemedMessagesShown'] = val;
         }
     },
     computed: {
@@ -29,10 +33,25 @@ var app = new Vue({
                 if(m.mine) arr.push(m);
             })
             return arr;
+        },
+        redeemedMessages(){
+            var arr = [];
+            this.messages.forEach(m => {
+                if(m.redeemed) arr.push(m);
+            })
+            return arr;
+        },
+        newMessages(){
+            var arr = [];
+            this.messages.forEach(m => {
+                if(!m.redeemed) arr.push(m);
+            })
+            return arr;
         }
     },
     data: () => {
         return {
+            redeemedMessagesShown: true,
             darkMode:1,
             me: null,
             showMe: false,
@@ -210,6 +229,7 @@ var app = new Vue({
         if (localStorage['creationToken']) Vue.set(this, 'creationToken', localStorage['creationToken']);
         if (localStorage['me']) Vue.set(this, 'me', localStorage['me']);
         if(localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
+        if(localStorage['redeemedMessagesShown']) this.redeemedMessagesShown = localStorage['redeemedMessagesShown'];
 
         window.addEventListener('DOMContentLoaded', (event) => {
 

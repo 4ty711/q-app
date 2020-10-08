@@ -119,10 +119,10 @@
                 </div>
 
                 <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl ">
-                    - NEW MESSAGES -
+                    - NEW MESSAGES ({{newMessages.length}}) -
                 </div>
 
-                <div class="leto-mb-lg leto-group" v-for="message in messages" v-if="!message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group" v-for="message in newMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
@@ -137,11 +137,11 @@
                     </div>
                 </div>
 
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey">
-                    - REDEEMED MESSAGES -
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-on:click="redeemedMessagesShown=!redeemedMessagesShown">
+                    REDEEMED MESSAGES ({{redeemedMessages.length}}). &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-eye-slash"></i></span><span v-else><i class="fa fa-eye"></i></span>
                 </div>
 
-                <div class="leto-mb-lg leto-group" v-for="message in myMessages" v-if="message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
@@ -153,6 +153,7 @@
                         </div>
                     </div>
                 </div>
+            
 
             </div>
             <div class="leto-width-fifth">
