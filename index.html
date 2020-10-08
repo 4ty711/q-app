@@ -146,11 +146,9 @@
                         {{message.senderShort}}
                     </div>
                     <div class="leto-group leto-column">
-                        <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}}</div>
-                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs"  v-if="message.redeemed">
-                            <span>{{message.responses.length}} responses</span>
-                        </div>
-                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs" v-if="message.mine">
+                        <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm leto-text-light-grey">{{message.content}} <span class="leto-text-grey">({{message.responses.length}})</span></div>
+                        
+                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs leto-pt-none leto-mt-none" v-if="message.mine">
                             <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
                         </div>
                     </div>
