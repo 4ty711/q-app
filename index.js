@@ -22,6 +22,15 @@ var app = new Vue({
             localStorage['darkMode'] = val;
         }
     },
+    computed: {
+        myMessages(){
+            var arr = [];
+            this.messages.forEach(m => {
+                if(m.mine) arr.push(m);
+            })
+            return arr;
+        }
+    },
     data: () => {
         return {
             darkMode:1,
@@ -36,7 +45,8 @@ var app = new Vue({
                 responses: []
             },
             newMessageShown: false,
-            tags: ["boelling", "spoo"],
+            lastMessages: [],
+            tags: [],
             messages: [
             ],
             participants: [{
@@ -88,6 +98,7 @@ var app = new Vue({
                     if(token.type == 'reciever') reciever += token.value.replace('(','').replace(')','');
                 } else if(token == '#') {
                     responses.push({title: lexerResult[i+1]});
+                    lexerResult.splice(i+1, 1)
                 } else {
                     content+= token
                 }
@@ -143,7 +154,7 @@ var app = new Vue({
 
             fs.unlink('/q/'+msgId, {}, (err, data) => {
                 this.messages.forEach((msg, i) => {
-                    if(msg._id == msgId) this.messages.splice(i);
+                    if(msg._id == msgId) this.messages.splice(i,1);
                 })  
             })
 
@@ -152,7 +163,7 @@ var app = new Vue({
             }, data => {
                 fs.unlink('/q/'+msgId, {}, (err, data) => {
                     this.messages.forEach((msg, i) => {
-                        if(msg._id == msgId) this.messages.splice(i);
+                        if(msg._id == msgId) this.messages.splice(i,1);
                     })  
                 })
             })

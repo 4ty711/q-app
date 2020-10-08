@@ -62,7 +62,7 @@
             </div>
             <div class="leto-width-three-fifths leto-column leto-width-full leto-group leto-vertical-top leto-pr">
                  
-                <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-mb-xl leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
+                <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
                     <img src="icon.png" class="icon" v-if=!newMessageShown>
                     <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
                         &nbsp; New message...
@@ -73,6 +73,7 @@
                         <br-->
                         <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
+                       
                        
                         <!--br>
                         <div class="leto-button-sm leto-border-darker-grey " v-for="response in newMessage.responses">{{response.title}} <i class="fa fa-times leto-pl-xxs" v-on:click="removeResponseFromNewMessage(response.title)"></i></div>
@@ -88,6 +89,11 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="leto-pv-sm leto-ph-xl leto-text-lighter-grey" v-if="newMessageShown && myMessages.length > 0">
+                    Last messages: <u class="leto-click" v-on:click="newMessage.content = myMessages[0].content">{{myMessages[0].content.substring(0, 20)}}...</u>
+                </div>
+
 
                 <!--div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl">
                    <div class="leto-bubble-wrapper-xl" v-on:click="newMessageShown=!newMessageShown">
@@ -108,11 +114,11 @@
                         </div>
                 </div-->
 
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl" v-if="!creationToken">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!creationToken">
                     If you want to create messages, you need a token.
                 </div>
 
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl ">
                     - NEW MESSAGES -
                 </div>
 
@@ -135,7 +141,7 @@
                     - REDEEMED MESSAGES -
                 </div>
 
-                <div class="leto-mb-lg leto-group" v-for="message in messages" v-if="message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group" v-for="message in myMessages" v-if="message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
