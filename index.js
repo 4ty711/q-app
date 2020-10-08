@@ -13,7 +13,7 @@ var app = new Vue({
     },
     data: () => {
         return {
-            darkMode:0,
+            darkMode:1,
             me: null,
             showMe: false,
             creationToken: null,
