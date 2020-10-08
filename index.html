@@ -45,6 +45,12 @@
         top:10px;
         right:10px;
     }
+
+    .icon {
+        height:20px;
+        width:40px;
+        float:left;
+    }
     </style>
 </head>
 
@@ -54,34 +60,67 @@
             <div class="leto-width-fifth">
             </div>
             <div class="leto-width-three-fifths leto-column leto-width-full leto-group leto-vertical-top leto-pr">
-                <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-sm leto-mb-lg " v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
-                    <div v-if="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
-                        <b>+</b> New message...
+                 
+                <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-mb-xl leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
+                    <img src="icon-box.png" class="icon" v-if=!newMessageShown>
+                    <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
+                        &nbsp; New message...
                     </div>
-                    <div v-else>
-                        <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Content...">
+                    <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
+                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="(no reciever)" v-model="newMessage.reciever">
+                        <br>
+                        <br>
+                        <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Message">
                         </textarea>
                         <br>
                         <div class="leto-button-sm leto-border-darker-grey " v-for="response in newMessage.responses">{{response.title}} <i class="fa fa-times leto-pl-xxs" v-on:click="removeResponseFromNewMessage(response.title)"></i></div>
-                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md  leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="responses &#8629;" v-model="newMessageResponse" v-on:keyup.enter="addRecieverToNewMessage($event)" v-on:keyup.delete="popResponseFromNewMessage($event)"> <span v-if="newMessageResponse">hit enter</span>
-                        <br>
-                        <br>
-                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="reciever" v-model="newMessage.reciever">
-                        <div class="leto-bubble" style="float:right;" v-on:click="newMessageShown=false">
-                            <i class="fa fa-times "></i>
-                        </div>
-                        <div class="leto-bubble" style="float:right;" v-on:click="createMessage(newMessage)">
-                            <i class="fa fa-paper-plane "></i>
+                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md  leto-ph-sm leto-pv-xs leto-bg-none leto-text-white-dm" placeholder="+ response" v-model="newMessageResponse" v-on:keyup.enter="addRecieverToNewMessage($event)" v-on:keyup.delete="popResponseFromNewMessage($event)"> <span v-if="newMessageResponse">hit enter</span>
+                        
+                        <div style="float:right;">
+                            <div class="leto-bubble-sm" v-on:click="newMessageShown=false">
+                                <i class="fa fa-times "></i>
+                            </div>
+                            <div class="leto-bubble-sm" v-on:click="createMessage(newMessage)">
+                                <i class="fa fa-paper-plane "></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="leto-mb-lg leto-group" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+
+                <!--div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl">
+                   <div class="leto-bubble-wrapper-xl" v-on:click="newMessageShown=!newMessageShown">
+                        <div class="leto-bubble-sm"><i class="fa fa-plus"></i></div>
+                        <label>New Message</label>
+                   </div>
+                   <div class="leto-bubble-wrapper-xl" v-on:click="openMessage()">
+                        <div class="leto-bubble-sm"><i class="fa fa-ellipsis-h"></i></div>
+                        <label>Open Message</label>
+                   </div>
+                    <div class="leto-bubble-wrapper-lg">
+                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': creationToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
+                            <label><span v-if="creationToken">Token: ok</span><span v-else>Get a token</span></label>
+                        </div>
+                        <div class="leto-bubble-wrapper-xl" v-if="me">
+                            <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
+                            <label>{{me}}</label>
+                        </div>
+                </div-->
+
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl" v-if="!creationToken">
+                    If you want to create messages, you need a token.
+                </div>
+
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey">
+                    - NEW MESSAGES -
+                </div>
+
+                <div class="leto-mb-lg leto-group" v-for="message in messages" v-if="!message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
                     <div class="leto-group leto-column">
                         <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}}</div>
-                        <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}">
+                        <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}" v-if="!message.redeemed">
                             <div class="leto-button-sm" v-for="response in message.responses" disabled v-on:click="redeemResponse(message._id, response.title, message.consumerToken)">{{response.title}}</div>
                         </div>
                         <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs" v-if="message.mine">
@@ -89,29 +128,54 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey">
+                    - REDEEMED MESSAGES -
+                </div>
+
+                <div class="leto-mb-lg leto-group" v-for="message in messages" v-if="message.redeemed" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                    <div class="leto-bubble-sm">
+                        {{message.senderShort}}
+                    </div>
+                    <div class="leto-group leto-column">
+                        <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}}</div>
+                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs"  v-if="message.redeemed">
+                            <span>{{message.responses.length}} responses</span>
+                        </div>
+                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs" v-if="message.mine">
+                            <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="leto-width-fifth">
                 <div class="leto-pv-xs">
                     <div class="leto-group leto-row ">
-                       
-                        <div class="leto-bubble-wrapper-lg">
+                         <div class="leto-bubble-wrapper-lg leto-mt-none">
                             <div class="leto-bubble-md leto-click" v-bind:class="{'leto-border-green': creationToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="creationToken">Token: ok</span><span v-else>Get a token</span></label>
+                            <label><span v-if="creationToken"></span><span v-else>Get a token</span></label>
                         </div>
                         <div class="leto-bubble-wrapper-xl" v-if="me">
                             <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
                             <label>{{me}}</label>
                         </div>
+                       
                     </div>
-                    <div v-if="showCreationToken">
+                    <div v-if="showCreationToken" class="leto-card leto-m-none">
+                        <div class="leto-m-sm">
+                            Your creationToken:
+                        </div>
                         <div class="leto-m-xxs"><input type="text" class="leto-width-full leto-bg-none leto-input leto-text-white leto-text-md" v-model="creationToken"></div>
-                        <div class="leto-button-xxs" v-on:click="saveCreationToken(creationToken)">save</div>
-                        <div class="leto-button-xxs" v-on:click="deleteCreationToken()">delete</div>
-                        <div class="leto-button-xxs" v-on:click="showCreationToken=false">close</div>
+                        <div>
+                            <div class="leto-button-xxs" v-on:click="saveCreationToken(creationToken)">save</div>
+                            <div class="leto-button-xxs" v-on:click="deleteCreationToken()">delete</div>
+                            <div class="leto-button-xxs" v-on:click="showCreationToken=false">close</div>
+                        </div>
                     </div>
                     <div v-if="showMe">
                         <div class="leto-m-sm">
-                            Yiu are identified by: {{me}}
+                            You are identified by: {{me}}
                         </div>
                         
                         <div class="leto-button-xxs" v-on:click="setMe()">set email</div>

@@ -57,6 +57,11 @@ var app = new Vue({
             })
         },
 
+        createMessageWithReciever(msg){
+            var reciever=prompt('Email Reciever');
+            if(!reciever) return;
+            this.createMessage(msg);
+        },
         createMessage(msg) {
             kju.createMessage({
                 msg: {
@@ -85,16 +90,43 @@ var app = new Vue({
                 token: token
             }, data => {
                 console.log(data);
+                this.messages.forEach((msg, i) => {
+                    if(msg._id == msgId) {
+                        msg.redeemed = true;
+                        fs.writeFile('/q/' + msg._id, JSON.stringify(msg), {}, (err, d) => {
+                            if (!err) {
+                                
+                            }
+                        })
+                    }
+                }) 
             })
         },
 
         deleteMessage(msgId) {
             if(!confirm('Really delete?')) return;
 
-            kj.r
+            fs.unlink('/q/'+msgId, {}, (err, data) => {
+                this.messages.forEach((msg, i) => {
+                    if(msg._id == msgId) this.messages.splice(i);
+                })  
+            })
+
+            kju.deleteMessage({
+                msgId: msgId
+            }, data => {
+                fs.unlink('/q/'+msgId, {}, (err, data) => {
+                    this.messages.forEach((msg, i) => {
+                        if(msg._id == msgId) this.messages.splice(i);
+                    })  
+                })
+            })
         },
 
         // Frontend Functions
+        openMessage(){
+            var msgLink = prompt('message link');
+        },
         deleteCreationToken() {
             this.creationToken = null;
             delete localStorage['creationToken'];
@@ -134,6 +166,13 @@ var app = new Vue({
         if(localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
 
         window.addEventListener('DOMContentLoaded', (event) => {
+
+            var textAreas = [document.getElementById('contentInput')];
+
+            Array.prototype.forEach.call(textAreas, function(elem) {
+                elem.placeholder = elem.placeholder.replace(/\\n/g, '\n');
+            });
+
 
             fs.mkdir('/q', {}, (err, data) => {
                 if (!err) {
