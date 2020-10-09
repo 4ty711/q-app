@@ -89,8 +89,16 @@ var app = new Vue({
                 return;
             }
 
-            var me = prompt('Enter your email. Your token will be sent to you');
+            var me = prompt('Enter your email. Your token will be sent to you. If you already have a token, enter it here.');
             if (!me) return;
+
+            if(!me.includes('@')){
+                this.personalToken = me;
+                localStorage['personalToken'] = me;
+                this.tokenRequested = 0;
+                localStorage['tokenRequested'] = 0;
+                return;
+            }
 
             kju.createToken({contact : me}, token => {
                 localStorage['tokenRequested'] = 1;
