@@ -24,7 +24,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <style>
-        html,
+    html,
     body {
         height: 100%;
     }
@@ -105,8 +105,8 @@
                         <label>Open Message</label>
                    </div>
                     <div class="leto-bubble-wrapper-lg">
-                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': creationToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="creationToken">Token: ok</span><span v-else>Get a token</span></label>
+                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
+                            <label><span v-if="personalToken">Token: ok</span><span v-else>Get a token</span></label>
                         </div>
                         <div class="leto-bubble-wrapper-xl" v-if="me">
                             <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
@@ -114,7 +114,7 @@
                         </div>
                 </div-->
 
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!creationToken">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!personalToken">
                     If you want to create messages, you need a token.
                 </div>
 
@@ -159,8 +159,9 @@
                 <div class="leto-pv-xs">
                     <div class="leto-group leto-row ">
                          <div class="leto-bubble-wrapper-lg leto-mt-none">
-                            <div class="leto-bubble-md leto-click" v-bind:class="{'leto-border-green': creationToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="creationToken"></span><span v-else>Get a token</span></label>
+                            <div class="leto-bubble-md leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
+                            <label><span v-if="!personalToken && tokenRequested == 0">Get a token</span>
+                                <span v-if="tokenRequested == 1">Enter your token</span></label>
                         </div>
                         <div class="leto-bubble-wrapper-xl" v-if="me">
                             <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
@@ -168,15 +169,15 @@
                         </div>
                        
                     </div>
-                    <div v-if="showCreationToken" class="leto-card leto-m-none">
+                    <div v-if="showpersonalToken" class="leto-card leto-m-none">
                         <div class="leto-m-sm">
-                            Your creationToken:
+                            Your personalToken:
                         </div>
-                        <div class="leto-m-xxs"><input type="text" class="leto-width-full leto-bg-none leto-input leto-text-white leto-text-md" v-model="creationToken"></div>
+                        <div class="leto-m-xxs"><input type="text" class="leto-width-full leto-bg-none leto-input leto-text-white leto-text-md" v-model="personalToken"></div>
                         <div>
-                            <div class="leto-button-xxs" v-on:click="saveCreationToken(creationToken)">save</div>
-                            <div class="leto-button-xxs" v-on:click="deleteCreationToken()">delete</div>
-                            <div class="leto-button-xxs" v-on:click="showCreationToken=false">close</div>
+                            <div class="leto-button-xxs" v-on:click="savepersonalToken(personalToken)">save</div>
+                            <div class="leto-button-xxs" v-on:click="deletepersonalToken()">delete</div>
+                            <div class="leto-button-xxs" v-on:click="showpersonalToken=false">close</div>
                         </div>
                     </div>
                     <div v-if="showMe">

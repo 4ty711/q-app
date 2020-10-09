@@ -47,11 +47,12 @@ var app = new Vue({
     data: () => {
         return {
             redeemedMessagesShown: 1,
+            tokenRequested:0,
             darkMode:1,
             me: null,
             showMe: false,
-            creationToken: null,
-            showCreationToken: false,
+            personalToken: null,
+            showpersonalToken: false,
             newMessageResponse: "",
             newMessage: {
                 content: "",
@@ -78,17 +79,22 @@ var app = new Vue({
         // API Functions
         createToken() {
 
-            if (this.creationToken) {
-                this.showCreationToken = !this.showCreationToken;
+            if (this.personalToken) {
+                this.showpersonalToken = !this.showpersonalToken;
+                return;
+            }
+
+            if(this.tokenRequested == 1) {
+                this.showpersonalToken = true;
                 return;
             }
 
             var me = prompt('Enter your email. Your token will be sent to you');
             if (!me) return;
 
-            kju.createToken(token => {
-                localStorage['creationToken'] = token;
-                this.creationToken = token;
+            kju.createToken({contact : me}, token => {
+                localStorage['tokenRequested'] = 1;
+                this.tokenRequested = 1;
             })
         },
 
@@ -129,7 +135,7 @@ var app = new Vue({
                     reciever: msg.reciever,
                     responses: msg.responses
                 },
-                token: this.creationToken
+                token: this.personalToken
             }, data => {
 
                 data.mine = true;
@@ -189,20 +195,24 @@ var app = new Vue({
         toggleRedeemedMessagesShown(){
             if(this.redeemedMessagesShown == 1) this.redeemedMessagesShown = 0
                 else this.redeemedMessagesShown = 1;
-            
+
             localStorage['redeemedMessagesShown'] = this.redeemedMessagesShown;
         },
         openMessage(){
             var msgLink = prompt('message link');
         },
-        deleteCreationToken() {
-            this.creationToken = null;
-            delete localStorage['creationToken'];
-            this.showCreationToken = false;
+        deletepersonalToken() {
+            this.personalToken = null;
+            delete localStorage['personalToken'];
+            this.showpersonalToken = false;
+            delete localStorage['tokenRequested'];
+            this.tokenRequested = false;
         },
-        saveCreationToken(token) {
-            this.creationToken = token;
-            localStorage['creationToken'] = token;
+        savepersonalToken(token) {
+            this.personalToken = token;
+            localStorage['personalToken'] = token;
+            this.tokenRequested = 0;
+            localStorage['tokenRequested'] = 0;
         },
         deleteMe() {
             this.me = null;
@@ -229,11 +239,11 @@ var app = new Vue({
         }
     },
     created() {
-        if (localStorage['creationToken']) Vue.set(this, 'creationToken', localStorage['creationToken']);
+        if (localStorage['personalToken']) Vue.set(this, 'personalToken', localStorage['personalToken']);
         if (localStorage['me']) Vue.set(this, 'me', localStorage['me']);
         if (localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
         if (localStorage['redeemedMessagesShown']) this.redeemedMessagesShown = localStorage['redeemedMessagesShown'];
- 
+        if (localStorage['tokenRequested']) this.tokenRequested = localStorage['tokenRequested'];
 
         window.addEventListener('DOMContentLoaded', (event) => {
 
