@@ -19,11 +19,6 @@ var app = new Vue({
         },
         darkMode(val){
             localStorage['darkMode'] = val;
-        },
-        redeemedMessagesShown(val){
-            if(val) val = 1;
-            else val = 0;
-            localStorage['redeemedMessagesShown'] = val;
         }
     },
     computed: {
@@ -51,7 +46,7 @@ var app = new Vue({
     },
     data: () => {
         return {
-            redeemedMessagesShown: true,
+            redeemedMessagesShown: 1,
             darkMode:1,
             me: null,
             showMe: false,
@@ -107,6 +102,7 @@ var app = new Vue({
             const lexer = SimpleLexer.Lexer(tokenDefinitions);
             const lexerResult = lexer(msg.content);
 
+            var originalContent = msg.content;
             var content = "";
             var responses = [];
             var reciever = "";
@@ -137,6 +133,7 @@ var app = new Vue({
             }, data => {
 
                 data.mine = true;
+                data.originalContent = originalContent;
 
                 fs.writeFile('/q/' + data._id, JSON.stringify(data), {}, (err, d) => {
                     if (!err) {
@@ -148,19 +145,19 @@ var app = new Vue({
             })
         },
 
-        redeemResponse(msgId, respId, token){
+        redeemResponse(msg, respId){
             kju.redeemResponse({
-                msgId: msgId,
+                msgId: msg._id,
                 respId: respId,
-                token: token
+                token: msg.consumerToken
             }, data => {
                 console.log(data);
-                this.messages.forEach((msg, i) => {
-                    if(msg._id == msgId) {
-                        msg.redeemed = true;
-                        fs.writeFile('/q/' + msg._id, JSON.stringify(msg), {}, (err, d) => {
+                this.messages.forEach((_msg, i) => {
+                    if(_msg._id == msg._id) {
+                        Vue.set(_msg, 'redeemed', true);
+                        fs.writeFile('/q/' + _msg._id, JSON.stringify(_msg), {}, (err, d) => {
                             if (!err) {
-                                
+                                Vue.set(msg, 'redeemed', true);
                             }
                         })
                     }
@@ -189,6 +186,12 @@ var app = new Vue({
         },
 
         // Frontend Functions
+        toggleRedeemedMessagesShown(){
+            if(this.redeemedMessagesShown == 1) this.redeemedMessagesShown = 0
+                else this.redeemedMessagesShown = 1;
+            
+            localStorage['redeemedMessagesShown'] = this.redeemedMessagesShown;
+        },
         openMessage(){
             var msgLink = prompt('message link');
         },
@@ -228,8 +231,9 @@ var app = new Vue({
     created() {
         if (localStorage['creationToken']) Vue.set(this, 'creationToken', localStorage['creationToken']);
         if (localStorage['me']) Vue.set(this, 'me', localStorage['me']);
-        if(localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
-        if(localStorage['redeemedMessagesShown']) this.redeemedMessagesShown = localStorage['redeemedMessagesShown'];
+        if (localStorage['darkMode']) this.darkMode = localStorage['darkMode'];
+        if (localStorage['redeemedMessagesShown']) this.redeemedMessagesShown = localStorage['redeemedMessagesShown'];
+ 
 
         window.addEventListener('DOMContentLoaded', (event) => {
 
@@ -238,7 +242,6 @@ var app = new Vue({
             Array.prototype.forEach.call(textAreas, function(elem) {
                 elem.placeholder = elem.placeholder.replace(/\\n/g, '\n');
             });
-
 
             fs.mkdir('/q', {}, (err, data) => {
                 if (!err) {

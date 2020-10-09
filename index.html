@@ -90,8 +90,8 @@
                     </div>
                 </div>
                 
-                <div class="leto-pv-sm leto-ph-xl leto-text-lighter-grey" v-if="newMessageShown && myMessages.length > 0">
-                    Last messages: <u class="leto-click" v-on:click="newMessage.content = myMessages[0].content">{{myMessages[0].content.substring(0, 20)}}...</u>
+                <div class="leto-pv-sm leto-ph-xl leto-text-lighter-grey" v-if="newMessageShown && myMessages.length > 0 && myMessages[0].originalContent">
+                    Last messages: <u class="leto-click" v-on:click="newMessage.content = myMessages[0].originalContent">{{myMessages[0].originalContent.substring(0, 20)}}...</u>
                 </div>
 
 
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl ">
-                    - NEW MESSAGES ({{newMessages.length}}) -
+                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW MESSAGES ({{newMessages.length}})</div>
                 </div>
 
                 <div class="leto-mb-lg leto-group" v-for="message in newMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
@@ -129,7 +129,7 @@
                     <div class="leto-group leto-column">
                         <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}}</div>
                         <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}" v-if="!message.redeemed">
-                            <div class="leto-button-sm" v-for="response in message.responses" disabled v-on:click="redeemResponse(message._id, response.title, message.consumerToken)">{{response.title}}</div>
+                            <div class="leto-button-sm" v-for="response in message.responses" disabled v-on:click="redeemResponse(message, response.title)">{{response.title}}</div>
                         </div>
                         <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs" v-if="message.mine">
                             <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
@@ -137,8 +137,8 @@
                     </div>
                 </div>
 
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-on:click="redeemedMessagesShown=!redeemedMessagesShown">
-                    REDEEMED MESSAGES ({{redeemedMessages.length}}). &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-eye-slash"></i></span><span v-else><i class="fa fa-eye"></i></span>
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-on:click="toggleRedeemedMessagesShown()">
+                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED MESSAGES ({{redeemedMessages.length}}). &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
                 </div>
 
                 <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
@@ -154,7 +154,6 @@
                     </div>
                 </div>
             
-
             </div>
             <div class="leto-width-fifth">
                 <div class="leto-pv-xs">
