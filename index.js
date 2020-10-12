@@ -110,16 +110,14 @@ var app = new Vue({
             if (!reciever) return;
             this.createMessage(msg);
         },
-        getMessages(type, page) {
+        getMessages(type, page, cb) {
 
             kju.getMessages({
                 token: this.personalToken,
                 type: 'recieved',
                 $page: page || 1
             }, data => {
-                data.forEach(d => {
-                    this.messages.unshift(d);
-                })
+                if(cb) cb(data);
             })
         },
         createMessage(msg) {
@@ -179,6 +177,7 @@ var app = new Vue({
                 this.messages.forEach((_msg, i) => {
                     if (_msg._id == msg._id) {
                         Vue.set(_msg, 'redeemed', true);
+                        Vue.set(msg, 'redeemed', true);
                         fs.writeFile('/q/' + _msg._id, JSON.stringify(_msg), {}, (err, d) => {
                             if (!err) {
                                 Vue.set(msg, 'redeemed', true);
@@ -274,20 +273,30 @@ var app = new Vue({
 
             fs.readdir('/q', {}, (err, data) => {
                 if (!err) {
-
-                    data.forEach(d => {
+                    var fullCounter = 0;
+                    data.forEach((d,i) => {
                         fs.readFile('/q/' + d, { 'encoding': 'utf8' }, (err, file) => {
                             if (!err) {
                                 var msg = JSON.parse(file);
                                 if (msg.mine) msg.senderShort = 'me';
                                 this.messages.unshift(msg)
+                                ++fullCounter;
+
+                                if(data.length-1 == fullCounter)
+                                {
+                                    this.getMessages('recieved', 1, messages => {
+                                        messages.forEach(msgRemote => {
+                                            msgRemote.senderShort = "XY";
+                                            var localMsg = this.messages.find(m => m._id == msgRemote._id);
+                                            if(!localMsg) this.messages.unshift(msgRemote)
+                                        })
+                                    });
+                                }
                             }
                         })
-
                     })
                 }
             })
-
         });
     }
 })
