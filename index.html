@@ -13,7 +13,7 @@
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="leto.min.css" />
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/kju-org/kju-client@latest/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kju-org/kju-client@latest/index.js?v=1"></script>
     <script src="dependencies/simple-lexer.js"></script>
     <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
     <script type="module">
@@ -65,7 +65,7 @@
                 <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
                     <img src="icon.png" class="icon" v-if=!newMessageShown>
                     <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
-                        &nbsp; New message...
+                        &nbsp; + New message...
                     </div>
                     <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
                         <!--input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="(no reciever)" v-model="newMessage.reciever">
@@ -177,6 +177,7 @@
                         <div>
                             <div class="leto-button-xxs" v-on:click="savepersonalToken(personalToken)">save</div>
                             <div class="leto-button-xxs" v-on:click="deletepersonalToken()">delete</div>
+                            <div class="leto-button-xxs" v-on:click="personalToken=null;createToken()">resend</div>
                             <div class="leto-button-xxs" v-on:click="showpersonalToken=false">close</div>
                         </div>
                     </div>

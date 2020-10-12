@@ -1,15 +1,15 @@
 var kju = new KJU();
 
 var isObject = (a) => {
-            return (!!a) && (a.constructor === Object);
-        };
+    return (!!a) && (a.constructor === Object);
+};
 
 const tokenDefinitions = [
-        new SimpleLexer.Matcher().start(/^\s+$/),
-        new SimpleLexer.Matcher().start(/,|\/|\.|-|;|:|_|\\|\^|\+|#|&|%|\?|@|\$/),
-        new SimpleLexer.Matcher().start(/\w/).next(/\w/),
-        SimpleLexer.TokenFactory({type:'reciever', ignore: true}, true).start(/\(/).next(/.|\s/).end(/\)/),
-    ];
+    new SimpleLexer.Matcher().start(/^\s+$/),
+    new SimpleLexer.Matcher().start(/,|\/|\.|-|;|:|_|\\|\^|\+|#|&|%|\?|@|\$/),
+    new SimpleLexer.Matcher().start(/\w/).next(/\w/),
+    SimpleLexer.TokenFactory({ type: 'reciever', ignore: true }, true).start(/\(/).next(/.|\s/).end(/\)/),
+];
 
 var app = new Vue({
     el: '#app',
@@ -17,29 +17,29 @@ var app = new Vue({
         newMessageShown(val) {
             if (val) document.getElementById('contentInput').focus();
         },
-        darkMode(val){
+        darkMode(val) {
             localStorage['darkMode'] = val;
         }
     },
     computed: {
-        myMessages(){
+        myMessages() {
             var arr = [];
             this.messages.forEach(m => {
-                if(m.mine) arr.push(m);
+                if (m.mine) arr.push(m);
             })
             return arr;
         },
-        redeemedMessages(){
+        redeemedMessages() {
             var arr = [];
             this.messages.forEach(m => {
-                if(m.redeemed) arr.push(m);
+                if (m.redeemed) arr.push(m);
             })
             return arr;
         },
-        newMessages(){
+        newMessages() {
             var arr = [];
             this.messages.forEach(m => {
-                if(!m.redeemed) arr.push(m);
+                if (!m.redeemed) arr.push(m);
             })
             return arr;
         }
@@ -47,8 +47,8 @@ var app = new Vue({
     data: () => {
         return {
             redeemedMessagesShown: 1,
-            tokenRequested:0,
-            darkMode:1,
+            tokenRequested: 0,
+            darkMode: 1,
             me: null,
             showMe: false,
             personalToken: null,
@@ -62,8 +62,7 @@ var app = new Vue({
             newMessageShown: false,
             lastMessages: [],
             tags: [],
-            messages: [
-            ],
+            messages: [],
             participants: [{
                     name: "benjamin.lotterer@spoo-group.com",
                     short: "BL"
@@ -84,7 +83,7 @@ var app = new Vue({
                 return;
             }
 
-            if(this.tokenRequested == 1) {
+            if (this.tokenRequested == 1) {
                 this.showpersonalToken = true;
                 return;
             }
@@ -92,7 +91,7 @@ var app = new Vue({
             var me = prompt('Enter your email. Your token will be sent to you. If you already have a token, enter it here.');
             if (!me) return;
 
-            if(!me.includes('@')){
+            if (!me.includes('@')) {
                 this.personalToken = me;
                 localStorage['personalToken'] = me;
                 this.tokenRequested = 0;
@@ -100,16 +99,28 @@ var app = new Vue({
                 return;
             }
 
-            kju.createToken({contact : me}, token => {
+            kju.personalToken({ contact: me }, token => {
                 localStorage['tokenRequested'] = 1;
                 this.tokenRequested = 1;
             })
         },
 
-        createMessageWithReciever(msg){
-            var reciever=prompt('Email Reciever');
-            if(!reciever) return;
+        createMessageWithReciever(msg) {
+            var reciever = prompt('Email Reciever');
+            if (!reciever) return;
             this.createMessage(msg);
+        },
+        getMessages(type, page) {
+
+            kju.getMessages({
+                token: this.personalToken,
+                type: 'recieved',
+                $page: page || 1
+            }, data => {
+                data.forEach(d => {
+                    this.messages.unshift(d);
+                })
+            })
         },
         createMessage(msg) {
 
@@ -122,20 +133,19 @@ var app = new Vue({
             var reciever = "";
 
             lexerResult.forEach((token, i) => {
-                if(isObject(token))
-                {
-                    if(token.type == 'reciever') reciever += token.value.replace('(','').replace(')','');
-                } else if(token == '#') {
-                    responses.push({title: lexerResult[i+1]});
-                    lexerResult.splice(i+1, 1)
+                if (isObject(token)) {
+                    if (token.type == 'reciever') reciever += token.value.replace('(', '').replace(')', '');
+                } else if (token == '#') {
+                    responses.push({ title: lexerResult[i + 1] });
+                    lexerResult.splice(i + 1, 1)
                 } else {
-                    content+= token
+                    content += token
                 }
             })
 
-            if(content) msg.content = content;
-            if(responses.length>0) msg.responses = responses;
-            if(reciever) msg.reciever = reciever;
+            if (content) msg.content = content;
+            if (responses.length > 0) msg.responses = responses;
+            if (reciever) msg.reciever = reciever;
 
             kju.createMessage({
                 msg: {
@@ -159,7 +169,7 @@ var app = new Vue({
             })
         },
 
-        redeemResponse(msg, respId){
+        redeemResponse(msg, respId) {
             kju.redeemResponse({
                 msgId: msg._id,
                 respId: respId,
@@ -167,7 +177,7 @@ var app = new Vue({
             }, data => {
                 console.log(data);
                 this.messages.forEach((_msg, i) => {
-                    if(_msg._id == msg._id) {
+                    if (_msg._id == msg._id) {
                         Vue.set(_msg, 'redeemed', true);
                         fs.writeFile('/q/' + _msg._id, JSON.stringify(_msg), {}, (err, d) => {
                             if (!err) {
@@ -175,38 +185,33 @@ var app = new Vue({
                             }
                         })
                     }
-                }) 
+                })
             })
         },
 
         deleteMessage(msgId) {
-            if(!confirm('Really delete?')) return;
-
-            fs.unlink('/q/'+msgId, {}, (err, data) => {
-                this.messages.forEach((msg, i) => {
-                    if(msg._id == msgId) this.messages.splice(i,1);
-                })  
-            })
+            if (!confirm('Really delete?')) return;
 
             kju.deleteMessage({
-                msgId: msgId
+                msgId: msgId,
+                token: this.personalToken
             }, data => {
-                fs.unlink('/q/'+msgId, {}, (err, data) => {
+                fs.unlink('/q/' + msgId, {}, (err, data) => {
                     this.messages.forEach((msg, i) => {
-                        if(msg._id == msgId) this.messages.splice(i,1);
-                    })  
+                        if (msg._id == msgId) this.messages.splice(i, 1);
+                    })
                 })
             })
         },
 
         // Frontend Functions
-        toggleRedeemedMessagesShown(){
-            if(this.redeemedMessagesShown == 1) this.redeemedMessagesShown = 0
-                else this.redeemedMessagesShown = 1;
+        toggleRedeemedMessagesShown() {
+            if (this.redeemedMessagesShown == 1) this.redeemedMessagesShown = 0
+            else this.redeemedMessagesShown = 1;
 
             localStorage['redeemedMessagesShown'] = this.redeemedMessagesShown;
         },
-        openMessage(){
+        openMessage() {
             var msgLink = prompt('message link');
         },
         deletepersonalToken() {
@@ -274,7 +279,7 @@ var app = new Vue({
                         fs.readFile('/q/' + d, { 'encoding': 'utf8' }, (err, file) => {
                             if (!err) {
                                 var msg = JSON.parse(file);
-                                if(msg.mine) msg.senderShort = 'me';
+                                if (msg.mine) msg.senderShort = 'me';
                                 this.messages.unshift(msg)
                             }
                         })
