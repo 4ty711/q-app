@@ -157,7 +157,7 @@ var app = new Vue({
                 this.qrCodeScannerShown = true
 
                 if (devices && devices.length) {
-                    cameraId = devices[0].id;
+                    cameraId = devices[devices.length-1].id;
                 }
 
                 html5QrCode.start(

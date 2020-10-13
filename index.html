@@ -94,7 +94,7 @@
                     <div class="leto-group leto-column leto-horizontal-center">
                         <div class="leto-bubble-wrapper-xxl leto-mt-none">
                             <div class="leto-bubble-md leto-click" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="tokenRequested==0">Get a personal token</span><span v-else>Enter the token</span></label>
+                            <label><span v-if="tokenRequested==0">Create a personal token</span><span v-else>Enter the token</span></label>
                         </div>
                         <br>
                         <div id="reader"></div>
@@ -106,9 +106,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl " v-if="newMessages.length>0">
+                <!--div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl " v-if="newMessages.length>0">
                     <div class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW ({{newMessages.length}})</div>
-                </div>
+                </div-->
                 <div class="leto-mb-lg leto-group" v-for="message in newMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
                     <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED ({{redeemedMessages.length}}) &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
                 </div>
                 <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1 && personalToken" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
