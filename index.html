@@ -7,7 +7,7 @@
     <meta name="description" content="Description">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="icon" type="image/png" href="icon.png">
-    <title>Q Messaging</title>
+    <title>Q Messager</title>
     <meta name="description" content="">
     <meta name="keywords" content="dabstract, programming">
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
@@ -16,6 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/kju-client@latest/index.js"></script>
     <script src="dependencies/simple-lexer.js"></script>
     <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
+    <script src="dependencies/qrcode.min.js"></script>
+    <script src="dependencies/qrcodescanner.min.js"></script>
     <script type="module">
         window.fs = new LightningFS('fs');
     import http from 'https://unpkg.com/isomorphic-git@beta/http/web/index.js';
@@ -24,9 +26,10 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <style>
-    html,
+        html,
     body {
-        height: 100%;
+
+        min-height: 100vh;
     }
 
     ::-webkit-input-placeholder { /* Edge */
@@ -56,29 +59,19 @@
 </head>
 
 <body>
-    <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top" id="app" style="height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
+    <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top" id="app" style="min-height: 100vh;height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
         <div class="leto-group leto-width-four-fifths leto-mt-xxl">
-            <div class="leto-width-fifth">
+            <div class="leto-width-none leto-width-fifth-tablet">
             </div>
-            <div class="leto-width-three-fifths leto-column leto-width-full leto-group leto-vertical-top leto-pr">
-                 
+            <div class="leto-width-full leto-width-three-fifths-tablet leto-column leto-width-full leto-group leto-vertical-top leto-pr">
                 <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
                     <img src="icon.png" class="icon" v-if=!newMessageShown>
                     <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
-                        &nbsp; + New message...
+                        &nbsp; <span v-if="personalToken">+ New message...</span>
                     </div>
                     <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
-                        <!--input type="text" class="leto-roundness-full leto-width-xl leto-text-md leto-ph-sm leto-pv-xs leto-bg-none leto-border-none leto-text-white-dm" placeholder="(no reciever)" v-model="newMessage.reciever">
-                        <br>
-                        <br-->
                         <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
-                       
-                       
-                        <!--br>
-                        <div class="leto-button-sm leto-border-darker-grey " v-for="response in newMessage.responses">{{response.title}} <i class="fa fa-times leto-pl-xxs" v-on:click="removeResponseFromNewMessage(response.title)"></i></div>
-                        <input type="text" class="leto-roundness-full leto-width-xl leto-text-md  leto-ph-sm leto-pv-xs leto-bg-none leto-text-white-dm" placeholder="+ response" v-model="newMessageResponse" v-on:keyup.enter="addRecieverToNewMessage($event)" v-on:keyup.delete="popResponseFromNewMessage($event)"> <span v-if="newMessageResponse">hit enter</span-->
-                        
                         <div style="float:right;">
                             <div class="leto-bubble-sm" v-on:click="newMessageShown=false">
                                 <i class="fa fa-times "></i>
@@ -89,39 +82,31 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="leto-pv-sm leto-ph-xl leto-text-lighter-grey" v-if="newMessageShown && myMessages.length > 0 && myMessages[0].originalContent">
                     Last messages: <u class="leto-click" v-on:click="newMessage.content = myMessages[0].originalContent">{{myMessages[0].originalContent.substring(0, 20)}}...</u>
                 </div>
-
-
-                <!--div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl">
-                   <div class="leto-bubble-wrapper-xl" v-on:click="newMessageShown=!newMessageShown">
-                        <div class="leto-bubble-sm"><i class="fa fa-plus"></i></div>
-                        <label>New Message</label>
-                   </div>
-                   <div class="leto-bubble-wrapper-xl" v-on:click="openMessage()">
-                        <div class="leto-bubble-sm"><i class="fa fa-ellipsis-h"></i></div>
-                        <label>Open Message</label>
-                   </div>
-                    <div class="leto-bubble-wrapper-lg">
-                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="personalToken">Token: ok</span><span v-else>Get a token</span></label>
-                        </div>
-                        <div class="leto-bubble-wrapper-xl" v-if="me">
-                            <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
-                            <label>{{me}}</label>
-                        </div>
-                </div-->
-
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!personalToken">
-                    If you want to create messages, you need a token.
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mt-xxl" v-if="!personalToken">
+                    If you want to recieve and create messages, you need a token.
                 </div>
-
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl ">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!personalToken">
+                    <div class="leto-group leto-column leto-horizontal-center">
+                        <div class="leto-bubble-wrapper-xxl leto-mt-none">
+                            <div class="leto-bubble-md leto-click" v-on:click="createToken()"><i class="fa fa-key"></i></div>
+                            <label><span v-if="tokenRequested==0">Get a personal token</span><span v-else>Enter the token</span></label>
+                        </div>
+                        <br>
+                        <div id="reader"></div>
+                        <br>
+                        <label class="leto-text-sm leto-mb-xxs leto-text-grey"><span v-if="!personalToken && tokenRequested == 0">I already have a token:</span></label>
+                        <div class="leto-group leto-row leto-horizontal-center">
+                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="enterToken()"><i class="fa fa-pencil-alt"></i></div>
+                            <div class="leto-bubble-sm leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="scanToken()"><i class="fa fa-qrcode"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl " v-if="newMessages.length>0">
                     <div class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW ({{newMessages.length}})</div>
                 </div>
-
                 <div class="leto-mb-lg leto-group" v-for="message in newMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
@@ -136,69 +121,60 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-on:click="toggleRedeemedMessagesShown()">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-click" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
                     <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED ({{redeemedMessages.length}}) &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
                 </div>
-
-                <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1 && personalToken" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
                     <div class="leto-group leto-column">
                         <div class="leto-text-lg leto-ml-sm leto-mv-xs leto-right leto-ph-sm leto-text-light-grey">{{message.content}} <span class="leto-text-grey">({{message.responses.length}})</span></div>
-                        
                         <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs leto-pt-none leto-mt-none" v-if="message.mine">
                             <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
                         </div>
                     </div>
                 </div>
-            
             </div>
-            <div class="leto-width-fifth">
+            <div class="leto-width-none leto-width-fifth-tablet">
                 <div class="leto-pv-xs">
-                    <div class="leto-group leto-row ">
-                         <div class="leto-bubble-wrapper-lg leto-mt-none">
-                            <div class="leto-bubble-md leto-click" v-bind:class="{'leto-border-green': personalToken}" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                            <label><span v-if="!personalToken && tokenRequested == 0">Get a token</span>
-                                <span v-if="tokenRequested == 1">Enter your token</span></label>
+                    <div class="leto-group leto-row " v-if="personalToken">
+                        <div class="leto-bubble-wrapper-lg leto-mt-none">
+                            <div class="leto-bubble-md leto-click leto-border-green" v-on:click="createToken()"><i class="fa fa-key"></i></div>
                         </div>
                         <div class="leto-bubble-wrapper-xl" v-if="me">
                             <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
                             <label>{{me}}</label>
                         </div>
-                       
                     </div>
                     <div v-if="showpersonalToken" class="leto-card leto-m-none">
                         <div class="leto-m-sm">
-                            Your personal token:
+                            Your personal token
                         </div>
-                        <div class="leto-m-xxs"><input type="text" class="leto-width-full leto-bg-none leto-input leto-text-white leto-text-md" v-model="personalToken"></div>
-                        <div>
-                            <div class="leto-button-xxs" v-on:click="savepersonalToken(personalToken)">save</div>
-                            <div class="leto-button-xxs" v-on:click="deletepersonalToken()">delete</div>
-                            <div class="leto-button-xxs" v-on:click="personalToken=null;createToken()">resend</div>
-                            <div class="leto-button-xxs" v-on:click="showpersonalToken=false">close</div>
+                        <div class="leto-m-xxs leto-group leto-row leto-vertical-center"><input type="text" class="leto-width-full leto-bg-none leto-input leto-text-white leto-text-md" v-model="personalToken">
+                            <div class="leto-click" v-on:click="savePersonalToken(personalToken)"><i class="fa fa-save"></i></div>
+                        </div>
+                        <div class="leto-text-center">
+                            <div id="qrcode"></div>
+                            <div class="leto-bubble-sm" v-on:click="deletePersonalToken()"><i class="fa fa-trash"></i></div>
+                            <div class="leto-bubble-sm" v-on:click="generateQRCodeForToken()"><i class="fa fa-qrcode"></i></div>
+                            <div class="leto-bubble-sm" v-on:click="showpersonalToken=false"><i class="fa fa-minus"></i></div>
                         </div>
                     </div>
                     <div v-if="showMe">
                         <div class="leto-m-sm">
                             You are identified by: {{me}}
                         </div>
-                        
                         <div class="leto-button-xxs" v-on:click="setMe()">set email</div>
                         <div class="leto-button-xxs" v-on:click="deleteMe()">delete</div>
                         <div class="leto-button-xxs" v-on:click="showMe=false">close</div>
                     </div>
-
                     <div class="leto-click modeToggler">
                         <i class="fa fa-moon leto-text-grey" v-if="darkMode==0" v-on:click="darkMode=1"></i>
                         <i class="fa fa-sun leto-text-grey" v-if="darkMode==1" v-on:click="darkMode=0"></i>
                     </div>
-                   
                 </div>
                 <div class="leto-p-xs">
-                    
                 </div>
             </div>
         </div>

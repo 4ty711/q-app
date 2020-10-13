@@ -42,11 +42,21 @@ var app = new Vue({
                 if (!m.redeemed) arr.push(m);
             })
             return arr;
+        },
+        showPersonalToken(val) {
+            if (!val) {
+                if (this.qrCodeShown) {
+                    this.tokenQRCode.clear();
+                    this.qrCodeShown = false;
+                }
+            }
         }
     },
     data: () => {
         return {
+            tokenQRCode: null,
             redeemedMessagesShown: 1,
+            qrCodeShown: false,
             tokenRequested: 0,
             darkMode: 1,
             me: null,
@@ -88,7 +98,7 @@ var app = new Vue({
                 return;
             }
 
-            var me = prompt('Enter your email. Your token will be sent to you. If you already have a token, enter it here.');
+            var me = prompt('Enter your email. Your token will be sent to you.');
             if (!me) return;
 
             if (!me.includes('@')) {
@@ -104,7 +114,77 @@ var app = new Vue({
                 this.tokenRequested = 1;
             })
         },
+        enterToken() {
 
+            if (this.personalToken) {
+                this.showpersonalToken = !this.showpersonalToken;
+                return;
+            }
+
+            if (this.tokenRequested == 1) {
+                this.showpersonalToken = true;
+                return;
+            }
+
+            var me = prompt('If you already have a token, enter it here');
+            if (!me) return;
+
+            if (!me.includes('@')) {
+                this.personalToken = me;
+                localStorage['personalToken'] = me;
+                this.tokenRequested = 0;
+                localStorage['tokenRequested'] = 0;
+            }
+        },
+        scanToken() {
+
+            const html5QrCode = new Html5Qrcode("reader");
+
+            function stopScanner() {
+                html5QrCode.stop().then(ignore => {
+                    his.qrCodeScannerShown = false;
+                }).catch(err => {
+
+                });
+            }
+
+            Html5Qrcode.getCameras().then(devices => {
+
+                var cameraId = null;
+
+                console.log('devices', devices)
+
+                this.qrCodeScannerShown = true
+
+                if (devices && devices.length) {
+                    cameraId = devices[0].id;
+                }
+
+                html5QrCode.start(
+                        cameraId, {
+                            fps: 10,
+                            qrbox: 250
+                        },
+                        qrCodeMessage => {
+                            console.log(`QR Code detected: ${qrCodeMessage}`);
+                            this.personalToken = qrCodeMessage;
+                            localStorage['personalToken'] = qrCodeMessage;
+                            this.tokenRequested = 0;
+                            localStorage['tokenRequested'] = 0;
+                            stopScanner();
+                        },
+                        errorMessage => {
+                            console.log(`QR Code no longer in front of camera.`);
+                        })
+                    .catch(err => {
+                        console.log(`Unable to start scanning, error: ${err}`);
+                    });
+            }).catch(err => {
+                // handle err  
+                console.log(err)
+            });
+
+        },
         createMessageWithReciever(msg) {
             var reciever = prompt('Email Reciever');
             if (!reciever) return;
@@ -117,7 +197,7 @@ var app = new Vue({
                 type: 'recieved',
                 $page: page || 1
             }, data => {
-                if(cb) cb(data);
+                if (cb) cb(data);
             })
         },
         createMessage(msg) {
@@ -204,6 +284,17 @@ var app = new Vue({
         },
 
         // Frontend Functions
+        generateQRCodeForToken() {
+
+            this.tokenQRCode = new QRCode(document.getElementById("qrcode"), this.personalToken);
+            this.qrCodeShown = true;
+        },
+        makeShortName(contact) {
+            if (contact.includes('.')) {
+                var parts = contact.split('.');
+                return (parts[0] || 'X').charAt(0) + (parts[1] || 'Y').charAt(0);
+            }
+        },
         toggleRedeemedMessagesShown() {
             if (this.redeemedMessagesShown == 1) this.redeemedMessagesShown = 0
             else this.redeemedMessagesShown = 1;
@@ -213,14 +304,16 @@ var app = new Vue({
         openMessage() {
             var msgLink = prompt('message link');
         },
-        deletepersonalToken() {
-            this.personalToken = null;
+        deletePersonalToken() {
+            if (confirm('Really delete?'))
+                this.personalToken = null;
+
             delete localStorage['personalToken'];
             this.showpersonalToken = false;
             delete localStorage['tokenRequested'];
             this.tokenRequested = false;
         },
-        savepersonalToken(token) {
+        savePersonalToken(token) {
             this.personalToken = token;
             localStorage['personalToken'] = token;
             this.tokenRequested = 0;
@@ -274,21 +367,22 @@ var app = new Vue({
             fs.readdir('/q', {}, (err, data) => {
                 if (!err) {
                     var fullCounter = 0;
-                    data.forEach((d,i) => {
+                    data.forEach((d, i) => {
                         fs.readFile('/q/' + d, { 'encoding': 'utf8' }, (err, file) => {
                             if (!err) {
                                 var msg = JSON.parse(file);
                                 if (msg.mine) msg.senderShort = 'me';
-                                this.messages.unshift(msg)
-                                ++fullCounter;
+                                else msg.senderShort = "X";
 
-                                if(data.length-1 == fullCounter)
-                                {
+                                this.messages.unshift(msg)
+                                    ++fullCounter;
+
+                                if (data.length - 1 == fullCounter) {
                                     this.getMessages('recieved', 1, messages => {
                                         messages.forEach(msgRemote => {
-                                            msgRemote.senderShort = "XY";
+                                            msgRemote.senderShort = this.makeShortName(msgRemote.sender);
                                             var localMsg = this.messages.find(m => m._id == msgRemote._id);
-                                            if(!localMsg) this.messages.unshift(msgRemote)
+                                            if (!localMsg) this.messages.unshift(msgRemote)
                                         })
                                     });
                                 }
