@@ -62,7 +62,7 @@ var app = new Vue({
             me: null,
             showMe: false,
             personalToken: null,
-            showpersonalToken: false,
+            showPersonalToken: false,
             newMessageResponse: "",
             newMessage: {
                 content: "",
@@ -89,12 +89,12 @@ var app = new Vue({
         createToken() {
 
             if (this.personalToken) {
-                this.showpersonalToken = !this.showpersonalToken;
+                this.showPersonalToken = !this.showPersonalToken;
                 return;
             }
 
             if (this.tokenRequested == 1) {
-                this.showpersonalToken = true;
+                this.showPersonalToken = true;
                 return;
             }
 
@@ -117,12 +117,12 @@ var app = new Vue({
         enterToken() {
 
             if (this.personalToken) {
-                this.showpersonalToken = !this.showpersonalToken;
+                this.showPersonalToken = !this.showPersonalToken;
                 return;
             }
 
             if (this.tokenRequested == 1) {
-                this.showpersonalToken = true;
+                this.showPersonalToken = true;
                 return;
             }
 
@@ -309,7 +309,7 @@ var app = new Vue({
                 this.personalToken = null;
 
             delete localStorage['personalToken'];
-            this.showpersonalToken = false;
+            this.showPersonalToken = false;
             delete localStorage['tokenRequested'];
             this.tokenRequested = false;
         },
@@ -318,6 +318,7 @@ var app = new Vue({
             localStorage['personalToken'] = token;
             this.tokenRequested = 0;
             localStorage['tokenRequested'] = 0;
+            this.showPersonalToken = false;
         },
         deleteMe() {
             this.me = null;
@@ -375,16 +376,19 @@ var app = new Vue({
                                 else msg.senderShort = "X";
 
                                 this.messages.unshift(msg)
+
                                     ++fullCounter;
 
-                                if (data.length - 1 == fullCounter) {
-                                    this.getMessages('recieved', 1, messages => {
-                                        messages.forEach(msgRemote => {
-                                            msgRemote.senderShort = this.makeShortName(msgRemote.sender);
-                                            var localMsg = this.messages.find(m => m._id == msgRemote._id);
-                                            if (!localMsg) this.messages.unshift(msgRemote)
-                                        })
-                                    });
+                                if (data.length == fullCounter) {
+                                    if (this.personalToken) {
+                                        this.getMessages('recieved', 1, messages => {
+                                            messages.forEach(msgRemote => {
+                                                msgRemote.senderShort = this.makeShortName(msgRemote.sender);
+                                                var localMsg = this.messages.find(m => m._id == msgRemote._id);
+                                                if (!localMsg) this.messages.unshift(msgRemote)
+                                            })
+                                        });
+                                    }
                                 }
                             }
                         })

@@ -147,7 +147,7 @@
                             <label>{{me}}</label>
                         </div>
                     </div>
-                    <div v-if="showpersonalToken" class="leto-card leto-m-none">
+                    <div v-if="showPersonalToken" class="leto-card leto-m-none">
                         <div class="leto-m-sm">
                             Your personal token
                         </div>
@@ -158,7 +158,7 @@
                             <div id="qrcode"></div>
                             <div class="leto-bubble-sm" v-on:click="deletePersonalToken()"><i class="fa fa-trash"></i></div>
                             <div class="leto-bubble-sm" v-on:click="generateQRCodeForToken()"><i class="fa fa-qrcode"></i></div>
-                            <div class="leto-bubble-sm" v-on:click="showpersonalToken=false"><i class="fa fa-minus"></i></div>
+                            <div class="leto-bubble-sm" v-on:click="showPersonalToken=false"><i class="fa fa-minus"></i></div>
                         </div>
                     </div>
                     <div v-if="showMe">
