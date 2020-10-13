@@ -28,7 +28,6 @@
     <style>
         html,
     body {
-
         min-height: 100vh;
     }
 
@@ -60,15 +59,18 @@
 
 <body>
     <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top" id="app" style="min-height: 100vh;height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
-        <div class="leto-group leto-width-four-fifths leto-mt-xxl">
+        <div class="leto-group leto-width-full leto-width-four-fifths-tablet leto-mt-xxl-tablet leto-mt">
             <div class="leto-width-none leto-width-fifth-tablet">
             </div>
-            <div class="leto-width-full leto-width-three-fifths-tablet leto-column leto-width-full leto-group leto-vertical-top leto-pr">
-                <div class="leto-card leto-display-block leto-width-full leto-p-sm leto-mt-xs leto-group leto-row" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
+            <div class="leto-width-full leto-width-three-fifths-tablet leto-column leto-width-full leto-group leto-vertical-top ">
+                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-pl-sm leto-pr-xxs leto-pv-xs" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
                     <img src="icon.png" class="icon" v-if=!newMessageShown>
                     <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
                         &nbsp; <span v-if="personalToken">+ New message...</span>
                     </div>
+                    <div class="leto-bubble-wrapper-lg leto-m-none leto-right" v-if="!newMessageShown">
+                            <div class="leto-bubble-md leto-click leto-border-green" v-on:click="createToken()"><i class="fa fa-key"></i></div>
+                        </div>
                     <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
                         <textarea class="leto-input leto-bg-none leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
@@ -139,9 +141,7 @@
             <div class="leto-width-none leto-width-fifth-tablet">
                 <div class="leto-pv-xs">
                     <div class="leto-group leto-row " v-if="personalToken">
-                        <div class="leto-bubble-wrapper-lg leto-mt-none">
-                            <div class="leto-bubble-md leto-click leto-border-green" v-on:click="createToken()"><i class="fa fa-key"></i></div>
-                        </div>
+                        
                         <div class="leto-bubble-wrapper-xl" v-if="me">
                             <div class="leto-bubble-md leto-click" v-on:click="showMe=!showMe"><i class="fa fa-user"></i></div>
                             <label>{{me}}</label>
