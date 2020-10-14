@@ -157,7 +157,7 @@ var app = new Vue({
                 this.qrCodeScannerShown = true
 
                 if (devices && devices.length) {
-                    cameraId = devices[devices.length-1].id;
+                    cameraId = devices[devices.length - 1].id;
                 }
 
                 html5QrCode.start(
@@ -368,6 +368,16 @@ var app = new Vue({
             fs.readdir('/q', {}, (err, data) => {
                 if (!err) {
                     var fullCounter = 0;
+
+                    if (data.length == 0) {
+                        this.getMessages('recieved', 1, messages => {
+                            messages.forEach(msgRemote => {
+                                msgRemote.senderShort = this.makeShortName(msgRemote.sender);
+                                this.messages.unshift(msgRemote)
+                            })
+                        });
+                    }
+
                     data.forEach((d, i) => {
                         fs.readFile('/q/' + d, { 'encoding': 'utf8' }, (err, file) => {
                             if (!err) {
