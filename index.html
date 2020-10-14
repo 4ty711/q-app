@@ -54,21 +54,32 @@
         width:40px;
         float:left;
     }
+
+    @media only screen 
+      and (max-device-width: 736px) { 
+        .main-input {
+            position: fixed;
+            bottom:20px;
+            left:1px;
+        }
+    }
+
+
     </style>
 </head>
 
 <body>
     <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top" id="app" style="min-height: 100vh;height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
-        <div class="leto-group leto-width-full leto-width-four-fifths-tablet leto-mt-xxl-tablet leto-mt">
-            <div class="leto-width-none leto-width-fifth-tablet">
+        <div class="leto-group leto-width-full leto-width-four-fifths-tablet-pc leto-mt-xxl-tablet-pc leto-mt leto-horizontal-center">
+            <div class="leto-width-none leto-width-fifth-tablet-pc">
             </div>
-            <div class="leto-width-full leto-width-three-fifths-tablet leto-column leto-width-full leto-group leto-vertical-top ">
-                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-pl-sm leto-pr-xxs leto-pv-xs" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown}">
+            <div class="leto-width-full leto-width-three-fifths-tablet-pc leto-column leto-width-full leto-group leto-vertical-top leto-horizontal-center">
+                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-pl-sm leto-pr-xxs leto-pv-xs main-input" v-bind:class="{'leto-roundness-lg': newMessageShown, 'leto-roundness-full': !newMessageShown} ">
                     <img src="icon.png" class="icon" v-if=!newMessageShown>
                     <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
                         &nbsp; <span v-if="personalToken">+ New message...</span>
                     </div>
-                    <div class="leto-bubble-wrapper-lg leto-m-none leto-right" v-if="!newMessageShown">
+                    <div class="leto-bubble-wrapper-lg leto-m-none leto-right" v-if="!newMessageShown && personalToken">
                             <div class="leto-bubble-md leto-click leto-border-green" v-on:click="createToken()"><i class="fa fa-key"></i></div>
                         </div>
                     <div v-show="newMessageShown" class="leto-pt-sm leto-width-full">
@@ -76,7 +87,7 @@
                         </textarea>
                         <div style="float:right;">
                             <div class="leto-bubble-sm" v-on:click="newMessageShown=false">
-                                <i class="fa fa-times "></i>
+                                <i class="fa fa-times"></i>
                             </div>
                             <div class="leto-bubble-sm" v-on:click="createMessage(newMessage)">
                                 <i class="fa fa-paper-plane "></i>
@@ -87,7 +98,7 @@
                 <div class="leto-pv-sm leto-ph-xl leto-text-lighter-grey" v-if="newMessageShown && myMessages.length > 0 && myMessages[0].originalContent">
                     Last messages: <u class="leto-click" v-on:click="newMessage.content = myMessages[0].originalContent">{{myMessages[0].originalContent.substring(0, 20)}}...</u>
                 </div>
-                <div class="leto-horizontal-center leto-group leto-width-full leto-mt-xxl" v-if="!personalToken">
+                <div class="leto-horizontal-center leto-group leto-width-full leto-mt-xxl leto-text-center" v-if="!personalToken">
                     If you want to recieve and create messages, you need a token.
                 </div>
                 <div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-mt-xl" v-if="!personalToken">
@@ -138,7 +149,7 @@
                     </div>
                 </div>
             </div>
-            <div class="leto-width-none leto-width-fifth-tablet">
+            <div class="leto-width-none leto-width-fifth-tablet-pc">
                 <div class="leto-pv-xs">
                     <div class="leto-group leto-row " v-if="personalToken">
                         
