@@ -271,6 +271,7 @@ var app = new Vue({
                     if (!err) {
                         this.newMessage = {};
                         this.messages.unshift(data)
+                        this.newMessageShown=false;
                     }
                 })
 
@@ -319,11 +320,11 @@ var app = new Vue({
 
         },
         generateQRCodeForToken() {
-
             this.tokenQRCode = new QRCode(document.getElementById("qrcode"), this.personalToken);
             this.qrCodeShown = true;
         },
         makeShortName(contact) {
+            if(!contact) return '?';
             if (contact.includes('.')) {
                 var parts = contact.split('.');
                 return (parts[0] || 'X').charAt(0) + (parts[1] || 'Y').charAt(0);
