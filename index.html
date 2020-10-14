@@ -130,10 +130,8 @@
                         </div>
                     </div>
                 </div>
-                <!--div class="leto-horizontal-center leto-group leto-width-full leto-mb-xxl leto-text-darker-grey leto-mt-xl " v-if="newMessages.length>0">
-                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW ({{newMessages.length}})</div>
-                </div-->
-                <div class="leto-mt-lg">
+                <div class="leto-mv-lg leto-width-full leto-text-center">
+                    {{openedMessageGroupSender}}
                 </div>
                 <div class="leto-mb-lg leto-group" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
@@ -151,9 +149,8 @@
                 </div>
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md leto-sticky sticky-bottom" v-if="Object.keys(messageGroups).length>0 && personalToken">
                     <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="!openedMessageGroupSender">OVERVIEW</a>
-                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-sm"></i> {{openedMessageGroupSender}}</div>
+                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-sm"></i> back</div>
                 </div>
-
                 <div class="leto-width-full leto-border-bottom leto-mb-xxl" v-if="!openedMessageGroupSender" id="overviewTable">
                     <div class="leto-group leto-width-full leto-border-top leto-border-darker-grey leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
                         <div class="leto-bubble-sm">{{makeShortName(group)}}</div>
@@ -163,20 +160,6 @@
                         </div>
                     </div>
                 </div>
-                <!--div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
-                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED ({{redeemedMessages.length}}) &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
-                </div-->
-                <!--div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1 && personalToken" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
-                    <div class="leto-bubble-sm">
-                        {{message.senderShort}}
-                    </div>
-                    <div class="leto-group leto-column">
-                        <div class="leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm leto-text-light-grey">{{message.content}} <span class="leto-text-grey">({{message.responses.length}})</span></div>
-                        <div class="leto-m-xs leto-right leto-text-grey leto-ph-xs leto-pt-none leto-mt-none" v-if="message.mine">
-                            <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
-                        </div>
-                    </div>
-                </div-->
             </div>
             <div class="leto-width-fifth-tablet-pc" v-bind:class="{'rightPane': !showPersonalToken}">
                 <div class="leto-pv-xs">
