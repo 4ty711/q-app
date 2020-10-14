@@ -60,6 +60,10 @@
         bottom: 0px;
     }
 
+    .sticky-top{
+        top:0px;
+    }
+
     @media only screen 
       and (max-device-width: 736px) { 
         .main-input {
@@ -135,8 +139,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="leto-mv-lg leto-width-full leto-text-center">
+                <span id="newMessages"></span>
+                <div class="leto-mv-lg leto-width-full leto-text-center" v-show="openedMessageGroupSender">
                     {{openedMessageGroupSender}}
+                </div>
+                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-top" v-if="newMessages.length>0 && personalToken">
+                    <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW</a>
                 </div>
                 <div class="leto-mb-lg leto-group" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
@@ -144,7 +152,7 @@
                     </div>
                     <div class="leto-group leto-column">
                         <div class="leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}}</div>
-                        <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}" >
+                        <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}">
                             <div class="leto-button-sm" v-for="response in message.responses" v-if="!message.redeemed" v-on:click="redeemResponse(message, response.title)">{{response.title}}</div>
                             <div class="leto-button-sm leto-text-light-black leto-border-light-black" v-for="response in message.responses" v-if="message.redeemed">{{response.title}}</div>
                         </div>
