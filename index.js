@@ -29,6 +29,15 @@ var app = new Vue({
             })
             return arr;
         },
+        filteredMessages() {
+            if (!this.openedMessageGroupSender) return this.newMessages;
+
+            var arr = [];
+            this.messages.forEach(m => {
+                if (m.sender == this.openedMessageGroupSender) arr.push(m);
+            })
+            return arr;
+        },
         redeemedMessages() {
             var arr = [];
             this.messages.forEach(m => {
@@ -50,10 +59,31 @@ var app = new Vue({
                     this.qrCodeShown = false;
                 }
             }
+        },
+        messageGroups() {
+            var groups = {};
+            this.messages.forEach(m => {
+                if (!groups[m.sender]) groups[m.sender] = [];
+
+                groups[m.sender].push(m);
+            });
+
+            var returnArr = [];
+            Object.keys(groups).forEach(k => {
+                returnArr.push({ sender: this.makeShortName(k), title: groups[k][0].content })
+            })
+
+            return groups;
         }
     },
     data: () => {
         return {
+            /*messageGroups: [{
+                title: "test1"
+            }, {
+                title: "test2"
+            }],*/
+            openedMessageGroupSender: null,
             tokenQRCode: null,
             redeemedMessagesShown: 1,
             qrCodeShown: false,
@@ -284,6 +314,10 @@ var app = new Vue({
         },
 
         // Frontend Functions
+        openMessageGroup(groupName) {
+            this.openedMessageGroupSender = groupName;
+
+        },
         generateQRCodeForToken() {
 
             this.tokenQRCode = new QRCode(document.getElementById("qrcode"), this.personalToken);

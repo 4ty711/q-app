@@ -55,6 +55,10 @@
         float:left;
     }
 
+    .sticky-bottom
+    {
+        bottom: 0px;
+    }
 
     @media only screen 
       and (max-device-width: 736px) { 
@@ -67,13 +71,18 @@
         .rightPane {
             display:none;
         }
+
+         .sticky-bottom
+        {
+            bottom: 100px;
+        }
     }
 
     </style>
 </head>
 
 <body>
-    <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top" id="app" style="min-height: 100vh;height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
+    <div class="leto-frame leto-group leto-horizontal-center leto-vertical-top leto-pb-xxl" id="app" style="min-height: 100vh;height:100%" v-bind:class="{'leto-frame-dark': darkMode==1}">
         <div class="leto-group leto-width-full leto-width-four-fifths-tablet-pc leto-mt-xxl-tablet-pc leto-mt leto-horizontal-center">
             <div class="leto-width-none leto-width-fifth-tablet-pc">
             </div>
@@ -126,7 +135,7 @@
                 </div-->
                 <div class="leto-mt-lg">
                 </div>
-                <div class="leto-mb-lg leto-group" v-for="message in newMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
@@ -140,10 +149,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
-                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED ({{redeemedMessages.length}}) &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
+                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md leto-sticky sticky-bottom" v-if="Object.keys(messageGroups).length>0 && personalToken">
+                    <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="!openedMessageGroupSender">OVERVIEW</a>
+                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-sm"></i> {{openedMessageGroupSender}}</div>
                 </div>
-                <div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1 && personalToken" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+
+                <div class="leto-width-full leto-border-bottom leto-mb-xxl" v-if="!openedMessageGroupSender" id="overviewTable">
+                    <div class="leto-group leto-width-full leto-border-top leto-border-darker-grey leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
+                        <div class="leto-bubble-sm">{{makeShortName(group)}}</div>
+                        <div>{{group}}
+                            <br>
+                            <span class="leto-text-sm leto-color-darker-grey">{{messages[0].content}}</span>
+                        </div>
+                    </div>
+                </div>
+                <!--div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md" v-if="redeemedMessages.length>0 && personalToken" v-on:click="toggleRedeemedMessagesShown()">
+                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey">REDEEMED ({{redeemedMessages.length}}) &nbsp; <span v-if="redeemedMessagesShown==1"><i class="fa fa-chevron-up"></i></span><span v-else><i class="fa fa-chevron-down"></i></span></div>
+                </div-->
+                <!--div class="leto-mb-lg leto-group" v-for="message in redeemedMessages" v-if="redeemedMessagesShown==1 && personalToken" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
                         {{message.senderShort}}
                     </div>
@@ -153,7 +176,7 @@
                             <span class="leto-click" v-on:click="deleteMessage(message._id)">delete</span>
                         </div>
                     </div>
-                </div>
+                </div-->
             </div>
             <div class="leto-width-fifth-tablet-pc" v-bind:class="{'rightPane': !showPersonalToken}">
                 <div class="leto-pv-xs">
