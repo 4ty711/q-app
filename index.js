@@ -36,7 +36,10 @@ var app = new Vue({
             this.messages.forEach(m => {
                 if (m.sender == this.openedMessageGroupSender) arr.push(m);
             })
-            return arr;
+
+            return arr.sort(function(a, b) {
+                return a.created < b.created;
+            });
         },
         redeemedMessages() {
             var arr = [];
@@ -50,7 +53,9 @@ var app = new Vue({
             this.messages.forEach(m => {
                 if (!m.redeemed) arr.push(m);
             })
-            return arr;
+            return arr.sort(function(a, b) {
+                return a.created < b.created;
+            });;
         },
         showPersonalToken(val) {
             if (!val) {
@@ -271,7 +276,7 @@ var app = new Vue({
                     if (!err) {
                         this.newMessage = {};
                         this.messages.unshift(data)
-                        this.newMessageShown=false;
+                        this.newMessageShown = false;
                     }
                 })
 
@@ -324,7 +329,7 @@ var app = new Vue({
             this.qrCodeShown = true;
         },
         makeShortName(contact) {
-            if(!contact) return '?';
+            if (!contact) return '?';
             if (contact.includes('.')) {
                 var parts = contact.split('.');
                 return (parts[0] || 'X').charAt(0) + (parts[1] || 'Y').charAt(0);

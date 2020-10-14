@@ -143,8 +143,8 @@
                 <div class="leto-mv-lg leto-width-full leto-text-center" v-show="openedMessageGroupSender">
                     {{openedMessageGroupSender}}
                 </div>
-                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-top" v-if="newMessages.length>0 && personalToken">
-                    <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-dark-grey">NEW</a>
+                <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-top" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
+                    <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none">NEW</a>
                 </div>
                 <div class="leto-mb-lg leto-group" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
                     <div class="leto-bubble-sm">
@@ -162,8 +162,8 @@
                     </div>
                 </div>
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mb-md leto-sticky sticky-bottom" v-if="Object.keys(messageGroups).length>0 && personalToken">
-                    <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="!openedMessageGroupSender">OVERVIEW</a>
-                    <div class="leto-button-sm leto-text-sm leto-text-dark-grey" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-xs"></i> back</div>
+                    <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="!openedMessageGroupSender">OVERVIEW</a>
+                    <div class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-xs"></i> back</div>
                 </div>
                 <div class="leto-width-full leto-border-bottom leto-mb-xxl" v-if="!openedMessageGroupSender" id="overviewTable">
                     <div class="leto-group leto-width-full leto-border-top leto-border-darker-grey leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
