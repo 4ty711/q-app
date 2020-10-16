@@ -146,7 +146,7 @@
                 <!--div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-top" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
                     <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none">NEW</a>
                 </div-->
-                <div class="leto-mb-lg leto-group" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-pr': message.mine}">
+                <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
                     <div class="leto-bubble-sm">
                         {{makeShortName(message.sender)}}
                     </div>
