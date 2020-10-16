@@ -151,7 +151,7 @@
                         {{makeShortName(message.sender)}}
                     </div>
                     <div class="leto-group leto-column">
-                        <div class="leto-group leto-vertical-center leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}} <div class="leto-bubble-xxs leto-m-none leto-ml-xxs leto-p-none leto-border-darker-grey leto-text-darker-grey" style="font-size: 8px;">({{makeShortName(message.reciever)}})</div> </div>
+                        <div class="leto-group leto-vertical-center leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm">{{message.content}} <div class="leto-bubble-xxs leto-m-none leto-ml-xxs leto-p-none leto-border-darker-grey leto-text-darker-grey" style="font-size: 8px;">{{makeShortName(message.reciever)}}</div> </div>
                         <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}">
                             <div class="leto-button-sm" v-for="response in message.responses" v-if="!message.redeemed" v-on:click="redeemResponse(message, response.title)">{{response.title}}</div>
                             <div class="leto-button-sm leto-text-light-black leto-border-light-black" v-for="response in message.responses" v-if="message.redeemed">{{response.title}}</div>
