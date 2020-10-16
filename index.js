@@ -34,7 +34,7 @@ var app = new Vue({
 
             var arr = [];
             this.messages.forEach(m => {
-                if (m.sender == this.openedMessageGroupSender) arr.push(m);
+                if (m.sender == this.openedMessageGroupSender || m.reciever == this.openedMessageGroupSender) arr.push(m);
             })
 
             return arr.sort(function(a, b) {
@@ -270,6 +270,7 @@ var app = new Vue({
             }, data => {
 
                 data.mine = true;
+                data.sender = 'me';
                 data.originalContent = originalContent;
 
                 fs.writeFile('/q/' + data._id, JSON.stringify(data), {}, (err, d) => {
