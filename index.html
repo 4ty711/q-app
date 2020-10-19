@@ -90,8 +90,8 @@
 
         .new-box
         {
-            width:50% !important;
-            left:22%;
+            //width:60% !important;
+            //right:22%;
         }
 
     }
@@ -105,15 +105,15 @@
             <div class="leto-width-none leto-width-fifth-tablet-pc">
             </div>
             <div class="leto-width-full leto-width-three-fifths-tablet-pc leto-column leto-width-full leto-group leto-vertical-top ">
-                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-pl-sm leto-ph-none leto-pv-xs main-input leto-bg-black leto-index-5 leto-bg-light-black leto-border-none" v-bind:class="{'leto-roundness-lg ': newMessageShown, 'leto-roundness-full new-box': !newMessageShown} ">
+                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-pl-sm leto-ph-none leto-pv-xs main-input leto-bg-black leto-index-5 leto-bg-black leto-border-none" v-bind:class="{'leto-roundness-lg ': newMessageShown, 'leto-roundness-full new-box': !newMessageShown} ">
                     <!--img src="icon.png" class="icon" v-if=!newMessageShown-->
-                    <div v-show="!newMessageShown" class="leto-click" v-on:click="newMessageShown=true;">
-                        &nbsp; <span v-if="personalToken">+ Message</span>
+                    <div v-show="!newMessageShown" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none leto-ml-none" v-on:click="newMessageShown=true;">
+                        &nbsp; <span v-if="personalToken"><i class="fa fa-plus"></i> MESSAGE</span>
                     </div>
                     <div class="leto-bubble-wrapper-lg leto-m-none leto-right" v-if="!newMessageShown && personalToken">
                         <div class="leto-bubble-sm leto-click leto-border-green" v-on:click="createToken()"><i class="fa fa-key"></i></div>
                     </div>
-                    <div v-show="newMessageShown" class="leto-pt-sm leto-width-full leto-bg-light-black ">
+                    <div v-show="newMessageShown" class="leto-pt-sm leto-width-full leto-bg-light-black leto-roundness-md">
                         <textarea class="leto-input leto-bg-light-black leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;background:#4a4a4a" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
                         <div style="float:left;">
