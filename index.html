@@ -157,9 +157,9 @@
                     <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="!openedMessageGroupSender">OVERVIEW</a></a>
                     <div class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-xs"></i> back</div>
                 </div>
-                <div class="leto-width-full leto-border-bottom leto-mb-xxl" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
-                    <div class="leto-group leto-width-full leto-border-top leto-border-darker-grey leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
-                        <div class="leto-bubble-sm">{{makeShortName(group)}}</div>
+                <div class="leto-width-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
+                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
+                        <div class="leto-bubble-sm" v-bind:style="'background:#'+hashCode(group)">{{makeShortName(group)}}</div>
                         <div>{{group}}
                             <br>
                             <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span>
@@ -179,7 +179,7 @@
                     </div>
 
                     <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
-                        <div class="leto-bubble-xs">
+                        <div class="leto-bubble-xs" v-bind:style="'background:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
                         </div>
                         <div class="leto-group leto-column">

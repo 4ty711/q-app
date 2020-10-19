@@ -66,13 +66,13 @@ var app = new Vue({
             }
         },
         messageGroups() {
-           
+
             var groups = {};
             this.messages.forEach(m => {
                 if (!groups[m.sender]) groups[m.sender] = [];
 
-                if(this.openedMessageGroupSender) groups[m.sender].push(m);
-                else if(!this.openedMessageGroupSender && !m.redeemed) {
+                if (this.openedMessageGroupSender) groups[m.sender].push(m);
+                else if (!this.openedMessageGroupSender && !m.redeemed) {
                     groups[m.sender].push(m);
                 }
             });
@@ -124,6 +124,21 @@ var app = new Vue({
         }
     },
     methods: {
+
+        hashCode(str) { // java String#hashCode
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+
+            var c = (hash & 0x00FFFFFF)
+                .toString(16)
+                .toUpperCase();
+
+            return null;//;"00000".substring(0, 6 - c.length) + c;
+
+
+        },
         // API Functions
         createToken() {
 
