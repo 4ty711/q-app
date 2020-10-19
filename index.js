@@ -70,10 +70,15 @@ var app = new Vue({
             var groups = {};
             this.messages.forEach(m => {
                 if (!groups[m.sender]) groups[m.sender] = [];
+                if (!groups[m.reciever]) groups[m.reciever] = [];
 
-                if (this.openedMessageGroupSender) groups[m.sender].push(m);
+                if (this.openedMessageGroupSender) {
+                    groups[m.sender].push(m);
+                    if(m.sender != m.reciever) groups[m.reciever].push(m);
+                } 
                 else if (!this.openedMessageGroupSender && !m.redeemed) {
                     groups[m.sender].push(m);
+                    if(m.sender != m.reciever) groups[m.reciever].push(m);
                 }
             });
 
@@ -125,6 +130,19 @@ var app = new Vue({
     },
     methods: {
 
+        isSenderPermitted(sender) {
+            if (localStorage['senderPermitted:' + sender]) return true;
+            return false;
+        },
+
+        getUnread(msgs){
+            var unread = 0;
+            msgs.forEach(m => {
+                if(!m.redeemed) unread++;
+            })
+            return unread;
+        },
+
         hashCode(str) { // java String#hashCode
             var hash = 0;
             for (var i = 0; i < str.length; i++) {
@@ -135,11 +153,21 @@ var app = new Vue({
                 .toString(16)
                 .toUpperCase();
 
-            return null;//;"00000".substring(0, 6 - c.length) + c;
+            return null; //;"00000".substring(0, 6 - c.length) + c;
 
 
         },
         // API Functions
+
+        permitSender(sender) {
+            kju.permitCorrespondence({
+                contact: sender,
+                token: this.personalToken
+            }, data => {
+                localStorage['senderPermitted:' + sender] = true;
+            })
+        },
+
         createToken() {
 
             if (this.personalToken) {
@@ -288,8 +316,12 @@ var app = new Vue({
                 token: this.personalToken
             }, data => {
 
+                if (data.msg && data.msg.includes('not yet permitted')) {
+                    return alert('correspondence not yet permitted');
+                }
+
                 data.mine = true;
-                data.sender = 'me';
+                //data.sender = 'me';
                 data.originalContent = originalContent;
 
                 fs.writeFile('/q/' + data._id, JSON.stringify(data), {}, (err, d) => {

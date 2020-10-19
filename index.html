@@ -17,7 +17,7 @@
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="leto.min.css" />
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/kju-client@0.0.13/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kju-client@0.0.14/index.js"></script>
     <script src="dependencies/simple-lexer.js"></script>
     <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
     <script src="dependencies/qrcode.min.js"></script>
@@ -158,26 +158,26 @@
                     <div class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-xs"></i> back</div>
                 </div>
                 <div class="leto-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
-                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
-                        <div class="leto-bubble-sm" v-bind:style="'background:#'+hashCode(group)">{{makeShortName(group)}}</div>
-                        <div>{{group}}
+                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" >
+                        <div class="leto-bubble-sm" v-bind:style="'background:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
+                        <div><span v-on:click="openMessageGroup(group)">{{group}}</span>
                             <br>
                             <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span>
+                        </div>
+                        <div class="leto-right"> 
+                            <div class="leto-badge leto-border-none leto-bg-light-black" v-if="getUnread(messages)">{{getUnread(messages)}}</div>
+                            <div v-if="!isSenderPermitted(group)" class="leto-bubble-sm leto-text-lighter-black" v-on:click="permitSender(group)"><i class="fa fa-check "></i></div>
                         </div>
                     </div>
                 </div>
                 <span id="newMessages"></span>
-               
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-bottom" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
                     <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none">NEW</a>
                 </div>
-                
                 <div v-for="(messages, sender) in messageGroups" class="leto-width-full" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
-                    
                     <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg">
                         <div><b>{{sender}}</b></div>
                     </div>
-
                     <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
                         <div class="leto-bubble-xs" v-bind:style="'background:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
