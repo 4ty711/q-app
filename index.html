@@ -157,7 +157,7 @@
                     <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="!openedMessageGroupSender">OVERVIEW</a></a>
                     <div class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left leto-pr-xs"></i> back</div>
                 </div>
-                <div class="leto-width-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
+                <div class="leto-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
                     <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-on:click="openMessageGroup(group)">
                         <div class="leto-bubble-sm" v-bind:style="'background:#'+hashCode(group)">{{makeShortName(group)}}</div>
                         <div>{{group}}
