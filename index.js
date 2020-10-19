@@ -66,16 +66,20 @@ var app = new Vue({
             }
         },
         messageGroups() {
+           
             var groups = {};
             this.messages.forEach(m => {
                 if (!groups[m.sender]) groups[m.sender] = [];
 
-                groups[m.sender].push(m);
+                if(this.openedMessageGroupSender) groups[m.sender].push(m);
+                else if(!this.openedMessageGroupSender && !m.redeemed) {
+                    groups[m.sender].push(m);
+                }
             });
 
             var returnArr = [];
             Object.keys(groups).forEach(k => {
-                returnArr.push({ sender: this.makeShortName(k), title: groups[k][0].content })
+                returnArr.push({ sender: this.makeShortName(k), title: (groups[k][0] || {}).content })
             })
 
             return groups;
