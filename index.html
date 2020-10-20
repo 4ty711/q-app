@@ -196,7 +196,7 @@
                         <span v-if="message.mine" class="leto-click leto-text-light-black leto-text-xs leto-mt-sm" v-on:click="deleteMessage(message._id)"><i class="fa fa-trash"></i></span>
 
                         <div class="leto-group leto-column">
-                            <div class="leto-group leto-vertical-center leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm" v-bind:class="{'leto-text-light-black': message.redeemed}">{{message.content}}  <span v-if="message.redeemed" class="leto-pl-xs">({{messages.length}})</span>
+                            <div class="leto-group leto-vertical-center leto-text-md leto-text-lg-tablet-pc leto-ml-sm leto-mv-xs leto-right leto-ph-sm" v-bind:class="{'leto-text-light-black': message.redeemed}">{{message.content}}  <span v-if="message.redeemed" class="leto-pl-xs">({{message.responses.length}})</span>
                             </div>
 
                             <div class="leto-display-block" v-bind:class="{'leto-right': message.mine}">
