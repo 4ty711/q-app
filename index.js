@@ -69,6 +69,7 @@ var app = new Vue({
 
             var groups = {};
             this.messages.forEach(m => {
+
                 if (!groups[m.sender]) groups[m.sender] = [];
                 if (!groups[m.reciever]) groups[m.reciever] = [];
 
@@ -77,7 +78,7 @@ var app = new Vue({
                     if(m.sender != m.reciever) groups[m.reciever].push(m);
                 } 
                 else if (!this.openedMessageGroupSender && !m.redeemed) {
-                    groups[m.sender].push(m);
+                    if(m.sender != 'me') groups[m.sender].push(m);
                     if(m.sender != m.reciever) groups[m.reciever].push(m);
                 }
             });
@@ -321,7 +322,7 @@ var app = new Vue({
                 }
 
                 data.mine = true;
-                //data.sender = 'me';
+                data.sender = 'me';
                 data.originalContent = originalContent;
 
                 fs.writeFile('/q/' + data._id, JSON.stringify(data), {}, (err, d) => {
