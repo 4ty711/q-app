@@ -161,7 +161,7 @@
                 </div>
                 <div class="leto-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
                     <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" >
-                        <div class="leto-bubble-sm" v-bind:style="'background:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
+                        <div class="leto-bubble-sm" v-bind:style="'color:#'+hashCode(group)+';border-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
                         <div><span v-on:click="openMessageGroup(group)">{{group}}</span>
                             <br>
                             <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span>
@@ -181,7 +181,7 @@
                         <div><b>{{sender}}</b></div>
                     </div>
                     <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
-                        <div class="leto-bubble-xs" v-bind:style="'background:#'+hashCode(sender)">
+                        <div class="leto-bubble-xs" v-bind:style="'color:#'+hashCode(sender)+';border-color:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
                         </div>
                         <div class="leto-group leto-column">
