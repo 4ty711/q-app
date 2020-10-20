@@ -165,7 +165,7 @@
                     </div>
                 </div>
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mv-md leto-sticky sticky-top" v-if="Object.keys(messageGroups).length && personalToken">
-                    <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="!openedMessageGroupSender">OVERVIEW</a></a>
+                    <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none" v-if="!openedMessageGroupSender">MY PARTICIPANTS</a></a>
                 </div>
                 <div class="leto-full leto-bg-dark-black leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
                     <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" >
@@ -182,7 +182,7 @@
                 </div>
                 <span id="newMessages"></span>
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-bottom" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
-                    <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none">NEW</a>
+                    <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-light-black leto-border-none">OPEN</a>
                 </div>
                 <div v-for="(messages, sender) in messageGroups" class="leto-width-full leto-border-top leto-border-light-black" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
                     <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg">
