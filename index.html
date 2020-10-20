@@ -137,9 +137,11 @@
                         <textarea class="leto-input leto-bg-light-black leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;background:#4a4a4a" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
                         <div style="float:left;">
-                            <div class="leto-bubble-sm" v-for="(val, reciever) in messageGroups" v-on:click="newMessage.content+='('+reciever+')'">
+                            <!--div class="leto-bubble-sm" v-for="(val, reciever) in messageGroups" v-on:click="newMessage.content+='('+reciever+')'">
                                 {{makeShortName(reciever) ||  '?'}}
-                            </div>
+                            </div-->
+                            <div class="leto-bubble-sm" v-on:click="newMessage.content+='(@)'">(@)</div>
+                            <div class="leto-bubble-sm" v-on:click="newMessage.content+='#'">#</div>
                         </div>
                         <div style="float:right;">
                             <div class="leto-bubble-sm" v-on:click="newMessageShown=false;newMessage.content=''">
