@@ -75,11 +75,10 @@ var app = new Vue({
 
                 if (this.openedMessageGroupSender) {
                     groups[m.sender].push(m);
-                    if(m.sender != m.reciever) groups[m.reciever].push(m);
-                } 
-                else if (!this.openedMessageGroupSender && !m.redeemed) {
-                    if(m.sender != 'me') groups[m.sender].push(m);
-                    if(m.sender != m.reciever) groups[m.reciever].push(m);
+                    if (m.sender != m.reciever) groups[m.reciever].push(m);
+                } else if (!this.openedMessageGroupSender && !m.redeemed) {
+                    if (m.sender != 'me') groups[m.sender].push(m);
+                    if (m.sender != m.reciever) groups[m.reciever].push(m);
                 }
             });
 
@@ -136,10 +135,10 @@ var app = new Vue({
             return false;
         },
 
-        getUnread(msgs){
+        getUnread(msgs) {
             var unread = 0;
             msgs.forEach(m => {
-                if(!m.redeemed) unread++;
+                if (!m.redeemed) unread++;
             })
             return unread;
         },
@@ -398,13 +397,13 @@ var app = new Vue({
             var msgLink = prompt('message link');
         },
         deletePersonalToken() {
-            if (confirm('Really delete?'))
+            if (confirm('Really delete?')) {
                 this.personalToken = null;
-
-            delete localStorage['personalToken'];
-            this.showPersonalToken = false;
-            delete localStorage['tokenRequested'];
-            this.tokenRequested = false;
+                delete localStorage['personalToken'];
+                this.showPersonalToken = false;
+                delete localStorage['tokenRequested'];
+                this.tokenRequested = false;
+            }
         },
         savePersonalToken(token) {
             this.personalToken = token;
