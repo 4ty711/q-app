@@ -165,6 +165,7 @@ var app = new Vue({
                 token: this.personalToken
             }, data => {
                 localStorage['senderPermitted:' + sender] = true;
+                alert('okay')
             })
         },
 
