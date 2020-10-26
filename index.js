@@ -90,7 +90,7 @@ var app = new Vue({
                 });*/
                 groups[k] = groups[k].reverse();
                 groups[k].forEach(k => {
-                    if(k.responses.length == 0) k.responses.push({title: "ok"})
+                    if (k.responses.length == 0) k.responses.push({ title: "ok" })
                 })
             })
 

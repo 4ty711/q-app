@@ -188,7 +188,11 @@
                         <div class="leto-bubble-sm leto-text-md leto-border-none medium-opacity" v-bind:style="'background-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
                         <div><span v-on:click="openMessageGroup(group)">{{group}}</span>
                             <br>
-                            <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span>
+                            <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span> 
+
+                            <div class="leto-button-xxs leto-border-light-black leto-text-grey" v-for="response in (messages[0] || {}) .responses" v-if="!messages[0].redeemed" v-on:click="redeemResponse(messages[0], response.title)">{{response.title}}</div>
+                                <!--div class="leto-button-xxs leto-text-light-black leto-border-light-black leto-m-xxs leto-ph-xs" v-for="response in message.responses" v-if="message.redeemed">{{response.title}}</div-->
+                            <div v-if="messages[0]" class="leto-mb"></div>
                         </div>
                         <div class="leto-right leto-text-right"> 
                             <div class="leto-badge leto-border-none leto-bg-light-black leto-click" v-if="getUnread(messages)" v-on:click="openMessageGroup(group)">{{getUnread(messages)}}</div>
@@ -200,11 +204,11 @@
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-bottom" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
                     <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-darker-grey leto-bg-light-black-dm leto-border-none">OPEN</a>
                 </div>
-                <div v-for="(messages, sender) in messageGroups" class="leto-width-full leto-border-bottom leto-border-light-black" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
-                    <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg">
+                <div v-for="(messages, sender) in messageGroups" class="leto-width-full leto-border-none leto-border-light-black" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
+                    <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg" v-if="openedMessageGroupSender == sender">
                         <div><b>{{sender}}</b></div>
                     </div>
-                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}"> 
+                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}"> 
                         <div class="leto-bubble-xs leto-border-none medium-opacity" v-bind:class="{'leto-bubble-xxs light-opacity': message.redeemed}" v-bind:style="'background-color:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
                         </div>
