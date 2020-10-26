@@ -204,7 +204,7 @@
                     <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg">
                         <div><b>{{sender}}</b></div>
                     </div>
-                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
+                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}"> 
                         <div class="leto-bubble-xs leto-border-none medium-opacity" v-bind:class="{'leto-bubble-xxs light-opacity': message.redeemed}" v-bind:style="'background-color:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
                         </div>

@@ -82,9 +82,16 @@ var app = new Vue({
                 }
             });
 
-            var returnArr = [];
+
             Object.keys(groups).forEach(k => {
-                returnArr.push({ sender: this.makeShortName(k), title: (groups[k][0] || {}).content })
+                /*var msgs = groups[k].sort(function(a, b) {
+                    console.log(a, b)
+                    return a.created > b.created;
+                });*/
+                groups[k] = groups[k].reverse();
+                groups[k].forEach(k => {
+                    if(k.responses.length == 0) k.responses.push({title: "ok"})
+                })
             })
 
             return groups;
