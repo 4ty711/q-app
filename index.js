@@ -37,9 +37,11 @@ var app = new Vue({
                 if (m.sender == this.openedMessageGroupSender || m.reciever == this.openedMessageGroupSender) arr.push(m);
             })
 
-            return arr.sort(function(a, b) {
+            return arr.reverse();
+
+            /*.sort(function(a, b) {
                 return a.created < b.created;
-            });
+            });*/
         },
         redeemedMessages() {
             var arr = [];
@@ -53,9 +55,11 @@ var app = new Vue({
             this.messages.forEach(m => {
                 if (!m.redeemed) arr.push(m);
             })
-            return arr.sort(function(a, b) {
-                return a.created < b.created;
-            });;
+
+            return arr.reverse();
+            /*return arr.sort(function(a, b) {
+                return a.created > b.created;
+            });*/
         },
         showPersonalToken(val) {
             if (!val) {
