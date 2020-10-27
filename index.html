@@ -80,6 +80,10 @@
         opacity: 0.7;
     }
 
+    .strong-opacity {
+        opacity: 0.85;
+    }
+
     @media only screen 
       and (max-device-width: 736px) { 
         .main-input {
@@ -184,8 +188,8 @@
                     <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-darker-grey leto-bg-light-black-dm leto-border-none" v-if="!openedMessageGroupSender">MY PARTICIPANTS</a></a>
                 </div>
                 <div class="leto-full leto-bg-dark-black-dm leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
-                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" >
-                        <div class="leto-bubble-sm leto-text-md leto-border-none medium-opacity" v-bind:style="'background-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
+                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-bind:class="{'leto-text-light-black': !getUnread(messages)}">
+                        <div class="leto-bubble-sm leto-text-md leto-border-none medium-opacity" v-bind:style="'background-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)" v-bind:class="{'light-opacity': !getUnread(messages)}">{{makeShortName(group)}}</div>
                         <div><span v-on:click="openMessageGroup(group)">{{group}}</span>
                             <br>
                             <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span> 
