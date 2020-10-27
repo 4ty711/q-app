@@ -22,6 +22,7 @@ var app = new Vue({
         }
     },
     computed: {
+        
         myMessages() {
             var arr = [];
             this.messages.forEach(m => {
@@ -70,6 +71,8 @@ var app = new Vue({
             }
         },
         messageGroups() {
+
+            var me = (this.parseJwt(this.personalToken) || {}).contact;
 
             var groups = {};
             this.messages.forEach(m => {
@@ -140,7 +143,13 @@ var app = new Vue({
         }
     },
     methods: {
-
+        parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        },
         isSenderPermitted(sender) {
             if (localStorage['senderPermitted:' + sender]) return true;
             return false;
