@@ -80,6 +80,10 @@
         opacity: 0.7;
     }
 
+    .strong-opacity {
+        opacity: 0.85;
+    }
+
     @media only screen 
       and (max-device-width: 736px) { 
         .main-input {
@@ -112,6 +116,10 @@
             padding: 10px;
         }
 
+        .leto-width-full {
+            width: 99% !important;
+        }
+
     }
 
     </style>
@@ -123,7 +131,7 @@
         <div class="leto-group leto-width-full leto-width-four-fifths-tablet-pc leto-mt-xxl-tablet-pc leto-mt leto-horizontal-center" style="min-height: 101%;">
            
             <div class="leto-width-full leto-width-three-fifths-tablet-pc leto-column leto-width-full leto-group leto-vertical-top ">
-                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-p-none main-input leto-index-5 leto-border-none mobile-message-box " v-bind:class="{'leto-roundness-lg ': newMessageShown, 'leto-roundness-full new-box': !newMessageShown} ">
+                <div class="leto-card leto-display-block leto-width-full leto-mt-xs leto-group leto-row leto-vertical-center leto-p-none main-input leto-index-5 leto-border-none mobile-message-box " v-bind:class="{'leto-roundness-lg ': newMessageShown, 'leto-roundness-full new-box': !newMessageShown} " v-if="personalToken">
                     <!--img src="icon.png" class="icon" v-if=!newMessageShown-->
 
                     <div class="leto-button leto-m-none leto-mr-xxs leto-text-sm leto-text-lighter-grey leto-bg-darker-grey leto-bg-light-black-dm leto-border-none leto-ph-sm" v-if="openedMessageGroupSender" v-on:click="openedMessageGroupSender=null"><i class="fa fa-chevron-left "></i></div>
@@ -138,11 +146,11 @@
                         <textarea class="leto-input leto-bg-light-black leto-ml-sm leto-border-none leto-text-lg leto-width-full" style="font-family:Arial;background:#4a4a4a" id="contentInput" v-model="newMessage.content" placeholder="Enter Message, use # for responses, ( ) for recievers \n\n#yes #no\n\n(reciever@email.com)" rows="5">
                         </textarea>
                         <div style="float:left;">
-                            <!--div class="leto-bubble-sm" v-for="(val, reciever) in messageGroups" v-on:click="newMessage.content+='('+reciever+')'">
+                            <div class="leto-bubble-xs" v-for="(val, reciever) in messageGroups" v-if="makeShortName(reciever)" v-on:click="newMessage.content+=' ('+reciever+') '">
                                 {{makeShortName(reciever) ||  '?'}}
-                            </div-->
-                            <div class="leto-bubble-sm" v-on:click="newMessage.content+='(@)'">(@)</div>
-                            <div class="leto-bubble-sm" v-on:click="newMessage.content+='#'">#</div>
+                            </div>
+                            <!--div class="leto-badge-sm leto-border-none" v-on:click="newMessage.content+='(@)'">(@)</div>
+                            <div class="leto-badge-sm leto-border-none" v-on:click="newMessage.content+='#'">#</div-->
                         </div>
                         <div style="float:right;">
                             <div class="leto-bubble-sm" v-on:click="newMessageShown=false;newMessage.content=''">
@@ -179,16 +187,20 @@
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mv-md leto-sticky sticky-top" v-if="Object.keys(messageGroups).length && personalToken">
                     <a href="#overviewTable" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-darker-grey leto-bg-light-black-dm leto-border-none" v-if="!openedMessageGroupSender">MY PARTICIPANTS</a></a>
                 </div>
-                <div class="leto-full leto-bg-dark-black-dm leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender" id="overviewTable" v-if="Object.keys(messageGroups).length">
-                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" >
-                        <div class="leto-bubble-sm leto-text-md leto-border-none medium-opacity" v-bind:style="'background-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)">{{makeShortName(group)}}</div>
+                <div class="leto-full leto-bg-dark-black-dm leto-roundness-xs leto-mb-xxl" style="background: #2b2b2b;" v-if="!openedMessageGroupSender && personalToken" id="overviewTable" v-if="Object.keys(messageGroups).length">
+                    <div class="leto-group leto-width-full leto-vertical-center leto-pv-xxs" v-for="(messages, group) in messageGroups" v-bind:class="{'leto-text-light-black': !getUnread(messages)}">
+                        <div class="leto-bubble-sm leto-text-md leto-border-none medium-opacity" v-bind:style="'background-color:#'+hashCode(group)" v-on:click="openMessageGroup(group)" v-bind:class="{'light-opacity': !getUnread(messages)}">{{makeShortName(group)}}</div>
                         <div><span v-on:click="openMessageGroup(group)">{{group}}</span>
                             <br>
-                            <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span>
+                            <span class="leto-text-sm leto-color-darker-grey">{{(messages[0] || {}).content}}</span> 
+
+                            <div class="leto-button-xxs leto-border-light-black leto-text-grey leto-ph-xs" v-for="response in (messages[0] || {}) .responses" v-if="!messages[0].redeemed" v-on:click="redeemResponse(messages[0], response.title)">{{response.title}}</div>
+                                <!--div class="leto-button-xxs leto-text-light-black leto-border-light-black leto-m-xxs leto-ph-xs" v-for="response in message.responses" v-if="message.redeemed">{{response.title}}</div-->
+                            <div v-if="messages[0]" class="leto-mb"></div>
                         </div>
-                        <div class="leto-right"> 
-                            <div class="leto-badge leto-border-none leto-bg-light-black" v-if="getUnread(messages)">{{getUnread(messages)}}</div>
-                            <div v-if="!isSenderPermitted(group)" class="leto-bubble-sm leto-text-lighter-black" v-on:click="permitSender(group)"><i class="fa fa-check "></i></div>
+                        <div class="leto-right leto-text-right"> 
+                            <div class="leto-badge leto-border-none leto-bg-light-black leto-click" v-if="getUnread(messages)" v-on:click="openMessageGroup(group)">{{getUnread(messages)}}</div>
+                            <div v-if="!isSenderPermitted(group)" class="leto-badge-sm leto-text-lighter-black leto-click" v-on:click="permitSender(group)">permit</div>
                         </div>
                     </div>
                 </div>
@@ -196,11 +208,11 @@
                 <div class="leto-horizontal-center leto-group leto-width-full leto-text-darker-grey leto-click leto-mt-none leto-mb-sm leto-sticky sticky-bottom" v-if="newMessages.length>0 && personalToken && !openedMessageGroupSender">
                     <a href="#newMessages" class="leto-button-sm leto-text-sm leto-text-lighter-grey leto-bg-darker-grey leto-bg-light-black-dm leto-border-none">OPEN</a>
                 </div>
-                <div v-for="(messages, sender) in messageGroups" class="leto-width-full leto-border-top leto-border-light-black" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
-                    <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg">
+                <div v-for="(messages, sender) in messageGroups" class="leto-width-full leto-border-none leto-border-light-black" v-if="(!openedMessageGroupSender || openedMessageGroupSender == sender) && messages.length">
+                    <div class="leto-group leto-horizontal-center leto-width-full leto-mv-lg" v-if="openedMessageGroupSender == sender">
                         <div><b>{{sender}}</b></div>
                     </div>
-                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in messages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}">
+                    <div class="leto-mb-lg leto-group leto-ph-none" v-for="message in filteredMessages" v-bind:class="{'leto-right leto-row-reverse leto-ph-none': message.mine}"> 
                         <div class="leto-bubble-xs leto-border-none medium-opacity" v-bind:class="{'leto-bubble-xxs light-opacity': message.redeemed}" v-bind:style="'background-color:#'+hashCode(sender)">
                             {{makeShortName(sender)}}
                         </div>
@@ -220,7 +232,7 @@
                     </div>
                 </div>
             </div>
-            <div class="leto-form leto-group leto-vertical-center leto-horizontal-center leto-index-10" v-if="showPersonalToken">
+            <div class="leto-form leto-group leto-vertical-center leto-horizontal-center leto-index-10 leto-border-none" v-if="showPersonalToken">
                 <div class="leto-pv-xs">
                     <div class="leto-group leto-row " v-if="personalToken">
                         <div class="leto-bubble-wrapper-xl" v-if="me">

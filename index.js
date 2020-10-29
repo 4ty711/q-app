@@ -22,6 +22,7 @@ var app = new Vue({
         }
     },
     computed: {
+        
         myMessages() {
             var arr = [];
             this.messages.forEach(m => {
@@ -37,9 +38,11 @@ var app = new Vue({
                 if (m.sender == this.openedMessageGroupSender || m.reciever == this.openedMessageGroupSender) arr.push(m);
             })
 
-            return arr.sort(function(a, b) {
+            return arr.reverse();
+
+            /*.sort(function(a, b) {
                 return a.created < b.created;
-            });
+            });*/
         },
         redeemedMessages() {
             var arr = [];
@@ -53,9 +56,11 @@ var app = new Vue({
             this.messages.forEach(m => {
                 if (!m.redeemed) arr.push(m);
             })
-            return arr.sort(function(a, b) {
-                return a.created < b.created;
-            });;
+
+            return arr.reverse();
+            /*return arr.sort(function(a, b) {
+                return a.created > b.created;
+            });*/
         },
         showPersonalToken(val) {
             if (!val) {
@@ -66,6 +71,8 @@ var app = new Vue({
             }
         },
         messageGroups() {
+
+            var me = (this.parseJwt(this.personalToken) || {}).contact;
 
             var groups = {};
             this.messages.forEach(m => {
@@ -82,9 +89,16 @@ var app = new Vue({
                 }
             });
 
-            var returnArr = [];
+
             Object.keys(groups).forEach(k => {
-                returnArr.push({ sender: this.makeShortName(k), title: (groups[k][0] || {}).content })
+                /*var msgs = groups[k].sort(function(a, b) {
+                    console.log(a, b)
+                    return a.created > b.created;
+                });*/
+                groups[k] = groups[k].reverse();
+                groups[k].forEach(k => {
+                    if (k.responses.length == 0) k.responses.push({ title: "ok" })
+                })
             })
 
             return groups;
@@ -129,7 +143,13 @@ var app = new Vue({
         }
     },
     methods: {
-
+        parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        },
         isSenderPermitted(sender) {
             if (localStorage['senderPermitted:' + sender]) return true;
             return false;
@@ -165,6 +185,7 @@ var app = new Vue({
                 token: this.personalToken
             }, data => {
                 localStorage['senderPermitted:' + sender] = true;
+                alert('okay')
             })
         },
 
